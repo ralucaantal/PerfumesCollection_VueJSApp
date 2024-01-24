@@ -1,0 +1,3 @@
+
+# Ignoră node_modules dacă folosești Node.js
+node_modules/
