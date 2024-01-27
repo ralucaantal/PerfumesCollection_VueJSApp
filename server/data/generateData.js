@@ -1,13 +1,38 @@
 import Chance from "chance";
-import { db } from '../firebase/firebase.js';
-import { collection, addDoc } from "firebase/firestore"; 
+import { db } from "../firebase/firebase.js";
+import { collection, addDoc } from "firebase/firestore";
 const chance = new Chance();
 
 const ingredientsList = [
-  "Bergamot", "Lavandă", "Vanilie", "Muscă", "Cedru", "Ylang-Ylang", "Patchouli",
-  "Portocală", "Iasomie", "Lămâie", "Ambră", "Vetiver", "Măr", "Bujor", "Santal",
-  "Iris", "Fructul pasiunii", "Rozmarin", "Mandarină", "Fragă", "Măghiran", "Trandafir",
-  "Gardenie", "Scorțișoară", "Cardamom", "Căpșuni", "Ananas", "Migdale", "Mentă",
+  "Bergamot",
+  "Lavandă",
+  "Vanilie",
+  "Muscă",
+  "Cedru",
+  "Ylang-Ylang",
+  "Patchouli",
+  "Portocală",
+  "Iasomie",
+  "Lămâie",
+  "Ambră",
+  "Vetiver",
+  "Măr",
+  "Bujor",
+  "Santal",
+  "Iris",
+  "Fructul pasiunii",
+  "Rozmarin",
+  "Mandarină",
+  "Fragă",
+  "Măghiran",
+  "Trandafir",
+  "Gardenie",
+  "Scorțișoară",
+  "Cardamom",
+  "Căpșuni",
+  "Ananas",
+  "Migdale",
+  "Mentă",
 ];
 
 const genderList = ["man", "woman", "uni"];
@@ -39,7 +64,6 @@ const generatePerfumes = (perfumesNo, brands) => {
         gender: chance.pickone(genderList),
         price: chance.d100() * 10 + 10,
         rating: chance.floating({ min: 1, max: 5 }),
-        brandName: brand.name,
       };
       brand.perfumes[perfumeId] = perfume; // Adaugă parfumul în colecția brand-ului
       perfumes[perfumeId] = perfume;
@@ -76,9 +100,11 @@ const addData = async () => {
   const brandsPromises = brands.map(async (brand) => {
     const brandDocRef = await addDoc(brandsCollectionRef, brand);
     // Adaugă parfumurile asociate brand-ului
-    await Promise.all(Object.values(brand.perfumes).map(async (perfume) => {
-      await addDoc(collection(brandDocRef, "perfumes"), perfume);
-    }));
+    await Promise.all(
+      Object.values(brand.perfumes).map(async (perfume) => {
+        await addDoc(collection(brandDocRef, "perfumes"), perfume);
+      })
+    );
   });
 
   const usersPromises = users.map(async (user) => {

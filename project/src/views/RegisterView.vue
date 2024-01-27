@@ -10,7 +10,7 @@
       />
       <input
         type="text"
-        placeholder="Username"
+        placeholder="Name"
         class="input-field"
         v-model="username"
       />
@@ -56,11 +56,11 @@ export default {
         this.email
       );
 
-      if (this.password === "" || this.email === "") {
-        this.message = "Parola sau emailul nu pot fi valori nule";
+      if (this.password === "" || this.email === "" || this.username === "") {
+        this.message = "Nu te poți înregistra fără toate informațiile!";
       }
 
-      if (this.email && this.password) {
+      if (this.email && this.password && this.username) {
         console.log("e ok");
 
         let localRequestOptions = { ...requestOptions };
@@ -68,7 +68,7 @@ export default {
 
         let postData = {
           email: this.email,
-          username: this.username,
+          name: this.username,
           password: this.password,
         };
 
