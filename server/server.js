@@ -63,6 +63,57 @@ app.post("/register", async (req, res) => {
   }
 });
 
+app.post("/login", async (req, res) => {
+  console.log("Vrei să faci POST cu ", req.body);
+
+  const userToLogin = req.body;
+  const usersCollection = collection(db, "users");
+
+  try {
+    const snap = await getDocs(usersCollection);
+    let userFound = false;
+    let userPassword = "";
+
+    snap.forEach((element) => {
+      console.log("user email: ", element.data().userToAdd);
+      const user = element.data().userToAdd;
+
+      if (user !== null && user !== undefined) {
+        if (user.email === userToLogin.email) {
+          console.log("exists");
+          userFound = true;
+          userPassword = user.password;
+        }
+      } else {
+        console.log("Object is null or undefined");
+      }
+    });
+
+    if (!userFound) {
+      res.send({ message: "The email does not exist." });
+      return;
+    }
+
+    bcrypt.compare(userToLogin.password, userPassword, function (err, result) {
+      if (result) {
+        console.log("ai reușit");
+        const token = jwt.sign({ data: userToLogin.email }, serverSecret, {
+          expiresIn: "1h",
+        });
+
+        console.log("Tokenul tău este: ", token);
+        res.send({ message: token });
+      } else {
+        console.log("Parolă greșită");
+        res.send({ message: "The password is not correct." });
+      }
+    });
+  } catch (error) {
+    console.error("Error getting documents: ", error);
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+});
+
 app.listen(port, () => {
   logger.info(`Serverul rulează la adresa http://localhost:${port}`);
 });
