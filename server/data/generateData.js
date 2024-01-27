@@ -1,37 +1,13 @@
-const Chance = require("chance");
-const { db } = require("../firebase/firebase.js");
+import Chance from "chance";
+import { db } from '../firebase/firebase.js';
+import { collection, addDoc } from "firebase/firestore"; 
 const chance = new Chance();
 
 const ingredientsList = [
-  "Bergamot",
-  "Lavandă",
-  "Vanilie",
-  "Muscă",
-  "Cedru",
-  "Ylang-Ylang",
-  "Patchouli",
-  "Portocală",
-  "Iasomie",
-  "Lămâie",
-  "Ambră",
-  "Vetiver",
-  "Măr",
-  "Bujor",
-  "Santal",
-  "Iris",
-  "Fructul pasiunii",
-  "Rozmarin",
-  "Mandarină",
-  "Fragă",
-  "Măghiran",
-  "Trandafir",
-  "Gardenie",
-  "Scorțișoară",
-  "Cardamom",
-  "Căpșuni",
-  "Ananas",
-  "Migdale",
-  "Mentă",
+  "Bergamot", "Lavandă", "Vanilie", "Muscă", "Cedru", "Ylang-Ylang", "Patchouli",
+  "Portocală", "Iasomie", "Lămâie", "Ambră", "Vetiver", "Măr", "Bujor", "Santal",
+  "Iris", "Fructul pasiunii", "Rozmarin", "Mandarină", "Fragă", "Măghiran", "Trandafir",
+  "Gardenie", "Scorțișoară", "Cardamom", "Căpșuni", "Ananas", "Migdale", "Mentă",
 ];
 
 const genderList = ["man", "woman", "uni"];
@@ -42,8 +18,9 @@ const generateBrands = (brandsNo) => {
     const brandId = chance.guid();
     const brand = {
       brandId: brandId,
-      name: chance.company(),
+      name: chance.word({ syllables: 3 }),
       startDate: chance.date({ string: true, american: false }),
+      perfumes: {}, // Adaugă un obiect pentru a stoca parfumurile
     };
     brands.push(brand);
   }
@@ -51,20 +28,22 @@ const generateBrands = (brandsNo) => {
 };
 
 const generatePerfumes = (perfumesNo, brands) => {
-  const perfumes = [];
+  const perfumes = {};
   for (let i = 0; i < perfumesNo; i++) {
-    const brand = chance.pickone(brands);
-    const perfume = {
-      name: chance.word({ syllables: 2 }),
-      ingrediens: chance.pickset(ingredientsList, 5),
-      gender: chance.pickone(genderList),
-      price: chance.d100() * 10 + 10,
-      rating: chance.floating({ min: 1, max: 5 }),
-      brandId: brand.brandId,
-      name: brand.name,
-      startDate: brand.startDate,
-    };
-    perfumes.push(perfume);
+    if (brands && brands.length > 0) {
+      const brand = chance.pickone(brands);
+      const perfumeId = chance.guid();
+      const perfume = {
+        name: chance.word({ syllables: 2 }),
+        ingredients: chance.pickset(ingredientsList, 5),
+        gender: chance.pickone(genderList),
+        price: chance.d100() * 10 + 10,
+        rating: chance.floating({ min: 1, max: 5 }),
+        brandName: brand.name,
+      };
+      brand.perfumes[perfumeId] = perfume; // Adaugă parfumul în colecția brand-ului
+      perfumes[perfumeId] = perfume;
+    }
   }
   return perfumes;
 };
@@ -73,7 +52,7 @@ const generateUsers = (nrUtilizatori) => {
   const users = [];
   for (let i = 0; i < nrUtilizatori; i++) {
     const user = {
-      username: chance.username(),
+      name: chance.name(),
       email: chance.email(),
       password: "parolaSecreta",
     };
@@ -89,26 +68,24 @@ const addData = async () => {
 
   const brands = generateBrands(brandsNo);
   const users = generateUsers(nrUtilizatori);
-  const perfumes = generatePerfumes(perfumesNo);
+  const perfumes = generatePerfumes(perfumesNo, brands);
 
-  const brandsCollectionRef = db.collection("brands");
-  for (const brand of brands) {
-    const brandDocRef = brandsCollectionRef.doc(brand.brandId);
-    await brandDocRef.set(brand);
-  }
+  const brandsCollectionRef = collection(db, "brands");
+  const usersCollectionRef = collection(db, "users");
 
-  const perfumesCollectionRef = db.collection("perfumes");
-  perfumes.forEach(async (perfume) => {
-    const perfumeDocRef = perfumesCollectionRef.doc();
-    await perfumeDocRef.set(perfume);
+  const brandsPromises = brands.map(async (brand) => {
+    const brandDocRef = await addDoc(brandsCollectionRef, brand);
+    // Adaugă parfumurile asociate brand-ului
+    await Promise.all(Object.values(brand.perfumes).map(async (perfume) => {
+      await addDoc(collection(brandDocRef, "perfumes"), perfume);
+    }));
   });
 
-  const usersCollectionRef = db.collection("users");
-  for (const user of users) {
-    const userDocRef = usersCollectionRef.doc();
-    await userDocRef.set(user);
-  }
+  const usersPromises = users.map(async (user) => {
+    await addDoc(usersCollectionRef, user);
+  });
 
+  await Promise.all([...brandsPromises, ...usersPromises]);
   console.log("Data added successfully.");
 };
 
