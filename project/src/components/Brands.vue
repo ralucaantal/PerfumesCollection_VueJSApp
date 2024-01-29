@@ -2,7 +2,7 @@
   <div class="brands">
     <h2>{{ brands.name }}</h2>
     <div v-if="isLoggedIn">
-      <button @click="deleteBrand(brands.brandId)">Delete Brand</button>
+      <button @click="deleteBrand(brands)">Delete Brand</button>
       <button @click="updateBrand(brands.brandId)">Update Brand</button>
     </div>
     <div v-if="brands.perfumes && brands.perfumes.length > 0">
@@ -42,6 +42,7 @@ export default {
   },
   methods: {
     deleteBrand(brandId) {
+      console.log(brandId)
       // Add logic to delete the brand
       console.log(`Delete brand with ID ${brandId}`);
 
@@ -52,7 +53,6 @@ export default {
       };
 
       localRequestOptions.body = JSON.stringify(postData);
-
       fetch(base_url + "deleteBrand", localRequestOptions)
         .then((res) => {
           if (res.status === 200) {

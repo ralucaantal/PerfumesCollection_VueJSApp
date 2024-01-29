@@ -9,6 +9,7 @@ import {
   collection,
   getDocs,
   addDoc,
+  getDoc,
 } from "firebase/firestore";
 import { db } from "./firebase/firebase.js";
 import expressPinoLogger from "express-pino-logger";
@@ -152,26 +153,32 @@ app.get("/viewBrands", async (req, res) => {
   }
 });
 
-
 app.post("/deleteBrand", async (req, res) => {
-  console.log("continutul este" + req.body.brandId);
-  const brandId = req.body.brandId; // Schimbarea aici
-
+  console.log(req.body);
+  console.log("sunt aici");
+  const brandId = "3WzzynVac1WbTEyu5EAH"; // Schimbarea aici
+  console.log("brand id: " + brandId + "\n\n\n\n");
   if (!brandId) {
     // Răspunde cu un cod 400 și un mesaj de eroare dacă nu există brandId
     return res.status(400).json({ message: "Parametrul brandId lipsește." });
   }
-  console.log("\n \n am ajuns aici \n \n");
-  console.log("Request received for brand deletion with ID:", brandId);
 
-  // Crează o referință la documentul brandului în colecția "brands"
+  // Crează o referință la colecția "brands"
   const brandsCollection = collection(db, "brands");
 
   try {
-    // Șterge documentul brandului din Firestore
+    // Get the document using the brandId
+    const brandDoc = await getDoc(doc(brandsCollection, brandId));
+    console.log("continnutul este: \n" + brandDoc.id);
+    if (brandDoc.id !== brandId) {
+      // Documentul nu există, nu îl puteți șterge
+      return res
+        .status(404)
+        .json({ message: "Brandul cu ID-ul specificat nu există." });
+    }
+    // Obțineți documentul pentru a-l șterge
     const brandRef = doc(brandsCollection, brandId);
     const deleteResult = await deleteDoc(brandRef);
-    console.log("Delete Result:", deleteResult);
 
     // Obține lista actualizată de branduri după ștergere
     const updatedBrandsSnapshot = await getDocs(brandsCollection);

@@ -100,11 +100,11 @@ const addData = async () => {
   const brandsPromises = brands.map(async (brand) => {
     const brandDocRef = await addDoc(brandsCollectionRef, brand);
     // Adaugă parfumurile asociate brand-ului
-    await Promise.all(
-      Object.values(brand.perfumes).map(async (perfume) => {
-        await addDoc(collection(brandDocRef, "perfumes"), perfume);
-      })
-    );
+    // await Promise.all(
+    //   Object.values(brand.perfumes).map(async (perfume) => {
+    //     await addDoc(collection(brandDocRef, "perfumes"), perfume);
+    //   })
+    // );
   });
 
   const usersPromises = users.map(async (user) => {
