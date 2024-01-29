@@ -2,8 +2,8 @@
   <div class="brands">
     <h2>{{ brands.name }}</h2>
     <div v-if="isLoggedIn">
-      <button @click="deleteBrand(brands.id)">Delete Brand</button>
-      <button @click="updateBrand(brands.id)">Update Brand</button>
+      <button @click="deleteBrand(brands.brandId)">Delete Brand</button>
+      <button @click="updateBrand(brands.brandId)">Update Brand</button>
     </div>
     <div v-if="brands.perfumes && brands.perfumes.length > 0">
       <p>Average Price: {{ averagePrice(brands.perfumes) }} $</p>
@@ -19,12 +19,18 @@
       <p>Gender: {{ perfume.gender }}</p>
       <p>Price: {{ perfume.price }} $</p>
       <p>Rating: {{ perfume.rating }}</p>
+
+      <div v-if="isLoggedIn">
+        <button @click="deletePerfume(perfume.id)">Delete Perfume</button>
+        <button @click="updatePerfume(perfume.id)">Update Perfume</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import { requestOptions, base_url } from "@/utils/requestOptions";
 
 export default {
   name: "ViewBrands",
@@ -38,6 +44,29 @@ export default {
     deleteBrand(brandId) {
       // Add logic to delete the brand
       console.log(`Delete brand with ID ${brandId}`);
+
+      let localRequestOptions = { ...requestOptions };
+      localRequestOptions.method = "POST";
+      let postData = {
+        brandId: brandId,
+      };
+
+      localRequestOptions.body = JSON.stringify(postData);
+
+      fetch(base_url + "deleteBrand", localRequestOptions)
+        .then((res) => {
+          if (res.status === 200) {
+            console.log("Brandul a fost șters cu succes");
+          } else {
+            console.log("A apărut o eroare la ștergerea brandului");
+          }
+        })
+        .catch((error) => {
+          console.error(
+            "Eroare în timpul cererii de ștergere a brandului:",
+            error
+          );
+        });
     },
     updateBrand(brandId) {
       // Add logic to update the brand

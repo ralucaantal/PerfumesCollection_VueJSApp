@@ -2,7 +2,14 @@ import express from "express";
 import cors from "cors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { getFirestore, collection, getDocs, addDoc } from "firebase/firestore";
+import {
+  doc,
+  deleteDoc,
+  getFirestore,
+  collection,
+  getDocs,
+  addDoc,
+} from "firebase/firestore";
 import { db } from "./firebase/firebase.js";
 import expressPinoLogger from "express-pino-logger";
 import pino from "pino";
@@ -142,6 +149,42 @@ app.get("/viewBrands", async (req, res) => {
   } catch (error) {
     console.error("Error fetching brands: ", error);
     res.status(500).send({ message: "Internal Server Error" });
+  }
+});
+
+
+app.post("/deleteBrand", async (req, res) => {
+  console.log("continutul este" + req.body.brandId);
+  const brandId = req.body.brandId; // Schimbarea aici
+
+  if (!brandId) {
+    // Răspunde cu un cod 400 și un mesaj de eroare dacă nu există brandId
+    return res.status(400).json({ message: "Parametrul brandId lipsește." });
+  }
+  console.log("\n \n am ajuns aici \n \n");
+  console.log("Request received for brand deletion with ID:", brandId);
+
+  // Crează o referință la documentul brandului în colecția "brands"
+  const brandsCollection = collection(db, "brands");
+
+  try {
+    // Șterge documentul brandului din Firestore
+    const brandRef = doc(brandsCollection, brandId);
+    const deleteResult = await deleteDoc(brandRef);
+    console.log("Delete Result:", deleteResult);
+
+    // Obține lista actualizată de branduri după ștergere
+    const updatedBrandsSnapshot = await getDocs(brandsCollection);
+    const updatedBrands = updatedBrandsSnapshot.docs.map((doc) => doc.data());
+
+    // Răspunde cu lista actualizată de branduri și un cod 200
+    res.status(200).json(updatedBrands);
+  } catch (error) {
+    console.error("Eroare în timpul ștergerii brandului:", error);
+    // Răspunde cu un cod 500 și un mesaj de eroare
+    res
+      .status(500)
+      .json({ message: "A apărut o eroare în timpul ștergerii brandului." });
   }
 });
 
