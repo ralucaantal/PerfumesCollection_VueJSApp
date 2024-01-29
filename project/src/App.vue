@@ -3,6 +3,7 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/login">Login</router-link> |
     <router-link to="/register">Register</router-link> |
+    <button class="logout-button" @click="logout">Logout</button>
   </nav>
   <router-view />
 </template>
@@ -14,11 +15,22 @@
 // import firebase from 'firebase/compat/app';
 // import 'firebase/compat/auth';
 // import 'firebase/compat/firestore';
+import router from "@/router";
 
 export default {
   setup() {
     // const router = useRouter();
     // const route = useRoute();
+  },
+
+  methods: {
+    logout() {
+      // Sterge tokenul din localStorage
+      localStorage.removeItem("token");
+      console.log("logout");
+      // Redirecționează către pagina de login sau altă pagină după logout
+      router.replace("/");
+    },
   },
 };
 </script>
@@ -43,5 +55,20 @@ nav {
       color: #a393eb;
     }
   }
+}
+
+.router-link,
+.logout-button {
+  font-weight: bold;
+  color: #363b4e;
+  text-decoration: none;
+  padding: 5px 10px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.router-link.router-link-exact-active,
+.logout-button:hover {
+  color: #a393eb;
 }
 </style>

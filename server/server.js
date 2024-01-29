@@ -73,9 +73,10 @@ app.post("/login", async (req, res) => {
     const snap = await getDocs(usersCollection);
     let userFound = false;
     let userPassword = "";
+    let username = ""; // Variabilă pentru a stoca numele utilizatorului
 
     snap.forEach((element) => {
-      console.log("user email: ", element.data().userToAdd);
+      //console.log("user email: ", element.data().userToAdd);
       const user = element.data().userToAdd;
 
       if (user !== null && user !== undefined) {
@@ -83,6 +84,7 @@ app.post("/login", async (req, res) => {
           console.log("exists");
           userFound = true;
           userPassword = user.password;
+          username = user.name; // Salvează numele utilizatorului
         }
       } else {
         console.log("Object is null or undefined");
@@ -97,10 +99,10 @@ app.post("/login", async (req, res) => {
     bcrypt.compare(userToLogin.password, userPassword, function (err, result) {
       if (result) {
         console.log("ai reușit");
-        const token = jwt.sign({ data: userToLogin.email }, serverSecret, {
+        const token = jwt.sign({ name: username }, serverSecret, {
           expiresIn: "1h",
         });
-
+        console.log("username: ", username);
         console.log("Tokenul tău este: ", token);
         res.send({ message: token });
       } else {
