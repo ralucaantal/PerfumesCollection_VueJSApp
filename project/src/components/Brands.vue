@@ -1,7 +1,17 @@
 <template>
   <div class="brands">
-    <h1>{{ brands.name }}</h1>
-    <p>Brandul are un numar de  parfumuri</p>
+    <h2>{{ brands.name }}</h2>
+    <p v-if="brands.perfumes">
+      Founded on {{ brands.startDate }} and offering
+      {{ brands.perfumes.length }} perfumes:
+    </p>
+    <div v-for="perfume in brands.perfumes" :key="perfume.id" class="brands">
+      <h3>{{ perfume.name }}</h3>
+      <p>Ingredients: {{ perfume.ingredients.join(", ") }}</p>
+      <p>Gender: {{ perfume.gender }}</p>
+      <p>Price: {{ perfume.price }} $</p>
+      <p>Rating: {{ perfume.rating }}</p>
+    </div>
   </div>
 </template>
 
@@ -11,7 +21,6 @@ export default {
   props: {
     brands: { type: Object },
   },
-
 };
 </script>
 

@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <h1>Brands:</h1>
     <div v-for="i in brands" :key="i">
       <Brands :brands="i" />
     </div>

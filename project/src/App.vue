@@ -1,10 +1,10 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link v-if="!isLoggedIn" to="/login">Login</router-link> | 
-    <router-link v-if="!isLoggedIn" to="/register">Register</router-link> | 
+    <router-link to="/">Home | </router-link> 
+    <router-link v-if="!isLoggedIn" to="/login">Login | </router-link>
+    <router-link v-if="!isLoggedIn" to="/register">Register | </router-link>
 
-    <router-link  to="/viewBrands">View Brands</router-link> | 
+    <router-link to="/viewBrands">View Brands & Perfumes | </router-link>
 
     <!-- Utilizează v-if pentru a verifica existența tokenului în localStorage -->
     <button v-if="isLoggedIn" class="logout-button" @click="logout">
@@ -19,7 +19,6 @@
 import { ref, watch } from "vue";
 import { useStore } from "vuex";
 import router from "@/router";
-
 
 export default {
   setup() {

@@ -122,9 +122,21 @@ app.get("/viewBrands", async (req, res) => {
     const brandsSnapshot = await getDocs(brandsCollection);
 
     const brands = [];
-    brandsSnapshot.forEach((doc) => {
-      brands.push(doc.data());
-    });
+    for (const brandDoc of brandsSnapshot.docs) {
+      const brandData = brandDoc.data();
+      const perfumesCollection = collection(
+        db,
+        "brands",
+        brandDoc.id,
+        "perfumes"
+      );
+      const perfumesSnapshot = await getDocs(perfumesCollection);
+      const perfumes = perfumesSnapshot.docs.map((perfumeDoc) =>
+        perfumeDoc.data()
+      );
+      brandData.perfumes = perfumes;
+      brands.push(brandData);
+    }
 
     res.status(200).send(brands);
   } catch (error) {
