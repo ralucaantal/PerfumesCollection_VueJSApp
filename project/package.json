@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@vue-hero-icons/outline": "^1.7.2",
     "ansi-html-community": "^0.0.8",
     "babel-eslint": "^10.1.0",
     "core-js": "^3.8.3",

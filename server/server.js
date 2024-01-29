@@ -104,7 +104,7 @@ app.post("/login", async (req, res) => {
         });
         console.log("username: ", username);
         console.log("Tokenul tău este: ", token);
-        res.send({ message: token , isOk: "true"});
+        res.send({ message: token, isOk: "true" });
       } else {
         console.log("Parolă greșită");
         res.send({ message: "The password is not correct." });
@@ -112,6 +112,23 @@ app.post("/login", async (req, res) => {
     });
   } catch (error) {
     console.error("Error getting documents: ", error);
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+});
+
+app.get("/viewBrands", async (req, res) => {
+  try {
+    const brandsCollection = collection(db, "brands");
+    const brandsSnapshot = await getDocs(brandsCollection);
+
+    const brands = [];
+    brandsSnapshot.forEach((doc) => {
+      brands.push(doc.data());
+    });
+
+    res.status(200).send(brands);
+  } catch (error) {
+    console.error("Error fetching brands: ", error);
     res.status(500).send({ message: "Internal Server Error" });
   }
 });
