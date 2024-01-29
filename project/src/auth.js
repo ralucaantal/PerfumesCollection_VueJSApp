@@ -16,8 +16,6 @@ export default createStore({
     login({ commit }) {
       console.log("Începe acțiunea de login"); // Adăugați această linie
       return new Promise((resolve) => {
-
-
         console.log(
           "Autentificare reușită. Setează starea isLoggedIn pe true."
         );
@@ -43,5 +41,8 @@ export default createStore({
         resolve(); // Resolve promisiunea pentru a semnala finalizarea acțiunii
       });
     },
+  },
+  getters: {
+    isLoggedIn: (state) => state.isLoggedIn,
   },
 });
