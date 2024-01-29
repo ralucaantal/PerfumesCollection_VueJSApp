@@ -104,7 +104,7 @@ app.post("/login", async (req, res) => {
         });
         console.log("username: ", username);
         console.log("Tokenul tău este: ", token);
-        res.send({ message: token });
+        res.send({ message: token , isOk: "true"});
       } else {
         console.log("Parolă greșită");
         res.send({ message: "The password is not correct." });

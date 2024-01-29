@@ -15,26 +15,43 @@
 
 <script>
 import jwt_decode from "jwt-decode";
+import { useStore } from "vuex";
+import { ref, watch } from "vue";
 
 export default {
   setup() {
-    const token = localStorage.getItem("token");
-    const isLoggedIn = token !== null;
+    //const token = localStorage.getItem("token");
+    //const token = () => localStorage.getItem("token");
+    //const isLoggedIn = token !== null;
+
+    const store = useStore();
+    const isLoggedIn = ref(store.state.isLoggedIn);
+    const getToken = () => localStorage.getItem("token");
+
+    watch(
+      () => store.state.isLoggedIn,
+      (newValue) => {
+        isLoggedIn.value = newValue;
+      }
+    );
 
     return {
       isLoggedIn,
-      token,
+      getToken,
     };
   },
 
   methods: {
     getUsername() {
-      if (this.token) {
-        console.log("Tokenul este: ", this.token);
+      const tokenValue = this.getToken();
+      // if (this.token) {
+      if (tokenValue) {
+        //console.log("Tokenul este: ", this.token);
 
         try {
-          console.log("sunt aici" + this.token);
-          const decodedToken = jwt_decode(this.token);
+          //console.log("sunt aici" + this.token);
+          //const decodedToken = jwt_decode(this.token);
+          const decodedToken = jwt_decode(tokenValue);
 
           console.log("Tokenul decodificat este: ", decodedToken);
 

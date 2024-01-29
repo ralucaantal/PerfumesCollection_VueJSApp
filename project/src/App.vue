@@ -15,13 +15,13 @@
 <script>
 //import { onBeforeUnmount } from "vue";
 import { ref, watch } from "vue";
-import { useStore } from 'vuex';
+import { useStore } from "vuex";
 import router from "@/router";
 
 export default {
   setup() {
     const store = useStore();
-    const isLoggedIn = ref(store.state.isLoggedIn);
+    let isLoggedIn = ref(store.state.isLoggedIn);
 
     // Utilizează watch pentru a reacționa la modificările în Vuex
     watch(
@@ -34,8 +34,10 @@ export default {
     function logout() {
       // Sterge tokenul din localStorage
       localStorage.removeItem("token");
-      store.dispatch('logout');
+       isLoggedIn.value = false;
+      store.dispatch("logout");
       console.log("logout");
+
       // Redirecționează către pagina de login sau altă pagină după logout
       router.replace("/");
     }

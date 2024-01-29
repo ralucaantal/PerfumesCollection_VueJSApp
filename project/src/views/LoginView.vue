@@ -62,15 +62,12 @@ export default {
           .then((res) => res.json())
           .then((data) => {
             console.log(data.message);
-
-            if (data.success) {
+            console.log(data.isOk)
+            if (data.isOk === "true") {
+              console.log("am intrat aici")
               localStorage.setItem("token", data.message);
-              store.dispatch("login").then(() => {
-                console.log(
-                  "Redirecționare către / după autentificare cu succes."
-                );
-                router.push("/");
-              });
+              router.replace("/");
+              store.dispatch("login");
             } else {
               message.value =
                 "Autentificare nereușită. Verificați datele introduse.";
@@ -94,50 +91,7 @@ export default {
 
     return { email, password, login };
   },
-  // data() {
-  //   return {
-  //     email: "",
-  //     password: "",
-  //     message: "",
-  //   };
-  // },
-  // methods: {
-  //   loginMethod: function () {
-  //     console.log("Am intrat in loginMethod...");
-  //     console.log(
-  //       "Vrei sa faci login cu email",
-  //       this.email,
-  //       "si parola",
-  //       this.password
-  //     );
-
-  //     if (this.password == "") {
-  //       this.message = "Parola nu poate fi nula";
-  //     }
-  //     if (this.email && this.password) {
-  //       console.log("e ok");
-
-  //       let localRequestOptions = { ...requestOptions };
-  //       localRequestOptions.method = "POST";
-
-  //       let postData = {
-  //         email: this.email,
-  //         password: this.password,
-  //       };
-
-  //       localRequestOptions.body = JSON.stringify(postData);
-
-  //       fetch(base_url + "login", localRequestOptions)
-  //         .then((res) => res.json())
-  //         .then((data) => {
-  //           console.log(data.message);
-
-  //           localStorage.setItem("token", data.message);
-  //           router.replace("/");
-  //         });
-  //     }
-  //   },
-  // },
+  
 };
 </script>
 

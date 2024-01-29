@@ -16,8 +16,7 @@ export default createStore({
     login({ commit }) {
       console.log("Începe acțiunea de login"); // Adăugați această linie
       return new Promise((resolve) => {
-        // Logica de autentificare aici
-        // ...
+
 
         console.log(
           "Autentificare reușită. Setează starea isLoggedIn pe true."
