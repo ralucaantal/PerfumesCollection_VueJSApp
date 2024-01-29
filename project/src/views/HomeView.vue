@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import jwt_decode from 'jwt-decode';
+import jwt_decode from "jwt-decode";
 
 export default {
   setup() {
@@ -26,15 +26,16 @@ export default {
       token,
     };
   },
+
   methods: {
     getUsername() {
       if (this.token) {
         console.log("Tokenul este: ", this.token);
 
         try {
-          console.log("sunt aici" + this.token)
+          console.log("sunt aici" + this.token);
           const decodedToken = jwt_decode(this.token);
-          
+
           console.log("Tokenul decodificat este: ", decodedToken);
 
           return decodedToken && decodedToken.name

@@ -3,34 +3,44 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/login">Login</router-link> |
     <router-link to="/register">Register</router-link> |
-    <button class="logout-button" @click="logout">Logout</button>
+
+    <!-- Utilizează v-if pentru a verifica existența tokenului în localStorage -->
+    <button v-if="isLoggedIn" class="logout-button" @click="logout">
+      Logout
+    </button>
   </nav>
   <router-view />
 </template>
 
 <script>
-// import HelloWorld from "./components/HelloWorld.vue";
-// import { onBeforeMount } from "vue";
-// import { useRouter, useRoute } from "vue-router";
-// import firebase from 'firebase/compat/app';
-// import 'firebase/compat/auth';
-// import 'firebase/compat/firestore';
+//import { onBeforeUnmount } from "vue";
+import { ref, watch } from "vue";
+import { useStore } from 'vuex';
 import router from "@/router";
 
 export default {
   setup() {
-    // const router = useRouter();
-    // const route = useRoute();
-  },
+    const store = useStore();
+    const isLoggedIn = ref(store.state.isLoggedIn);
 
-  methods: {
-    logout() {
+    // Utilizează watch pentru a reacționa la modificările în Vuex
+    watch(
+      () => store.state.isLoggedIn,
+      (newValue) => {
+        isLoggedIn.value = newValue;
+      }
+    );
+
+    function logout() {
       // Sterge tokenul din localStorage
       localStorage.removeItem("token");
+      store.dispatch('logout');
       console.log("logout");
       // Redirecționează către pagina de login sau altă pagină după logout
       router.replace("/");
-    },
+    }
+
+    return { isLoggedIn, logout };
   },
 };
 </script>

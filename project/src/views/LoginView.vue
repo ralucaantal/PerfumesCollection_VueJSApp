@@ -1,5 +1,5 @@
 <template>
-  <div class="main" @submit.prevent="loginMethod">
+  <div class="main" @submit.prevent="login">
     <form>
       <h1>Login</h1>
       <input
@@ -24,36 +24,36 @@
 <script>
 import { requestOptions, base_url } from "@/utils/requestOptions";
 import router from "@/router";
+import { ref, watch } from "vue";
+import { useStore } from "vuex";
 export default {
-  data() {
-    return {
-      email: "",
-      password: "",
-      message: "",
-    };
-  },
-  methods: {
-    loginMethod: function () {
+  setup() {
+    const store = useStore();
+    const email = ref("");
+    const password = ref("");
+    const message = ref("");
+    function login() {
       console.log("Am intrat in loginMethod...");
       console.log(
         "Vrei sa faci login cu email",
-        this.email,
+        email.value,
         "si parola",
-        this.password
+        password.value
       );
 
-      if (this.password == "") {
-        this.message = "Parola nu poate fi nula";
+      if (password.value == "") {
+        message.value = "Parola nu poate fi nula";
       }
-      if (this.email && this.password) {
+
+      if (email.value && password.value) {
         console.log("e ok");
 
         let localRequestOptions = { ...requestOptions };
         localRequestOptions.method = "POST";
 
         let postData = {
-          email: this.email,
-          password: this.password,
+          email: email.value,
+          password: password.value,
         };
 
         localRequestOptions.body = JSON.stringify(postData);
@@ -63,12 +63,81 @@ export default {
           .then((data) => {
             console.log(data.message);
 
-            localStorage.setItem("token", data.message);
-            router.replace("/");
+            if (data.success) {
+              localStorage.setItem("token", data.message);
+              store.dispatch("login").then(() => {
+                console.log(
+                  "Redirecționare către / după autentificare cu succes."
+                );
+                router.push("/");
+              });
+            } else {
+              message.value =
+                "Autentificare nereușită. Verificați datele introduse.";
+            }
           });
+      } else {
+        console.log("Nu s-au îndeplinit condițiile pentru login.");
+        console.log("Email:", email.value);
+        console.log("Parolă:", password.value);
+        console.log("Mesaj:", message.value);
       }
-    },
+    }
+
+    watch(
+      () => store.state.message, // Urmează aceeași structură ca în exemplul anterior
+      (newValue) => {
+        message.value = newValue; // Actualizează variabila message cu noua valoare din store
+        console.log("Mesaj din store:", message.value); // Afișează mesajul în consolă
+      }
+    );
+
+    return { email, password, login };
   },
+  // data() {
+  //   return {
+  //     email: "",
+  //     password: "",
+  //     message: "",
+  //   };
+  // },
+  // methods: {
+  //   loginMethod: function () {
+  //     console.log("Am intrat in loginMethod...");
+  //     console.log(
+  //       "Vrei sa faci login cu email",
+  //       this.email,
+  //       "si parola",
+  //       this.password
+  //     );
+
+  //     if (this.password == "") {
+  //       this.message = "Parola nu poate fi nula";
+  //     }
+  //     if (this.email && this.password) {
+  //       console.log("e ok");
+
+  //       let localRequestOptions = { ...requestOptions };
+  //       localRequestOptions.method = "POST";
+
+  //       let postData = {
+  //         email: this.email,
+  //         password: this.password,
+  //       };
+
+  //       localRequestOptions.body = JSON.stringify(postData);
+
+  //       fetch(base_url + "login", localRequestOptions)
+  //         .then((res) => res.json())
+  //         .then((data) => {
+  //           console.log(data.message);
+
+  //           localStorage.setItem("token", data.message);
+  //           router.replace("/");
+  //         });
+  //     }
+  //   },
+  // },
 };
 </script>
 
