@@ -132,18 +132,26 @@ app.get("/viewBrands", async (req, res) => {
     const brands = [];
     for (const brandDoc of brandsSnapshot.docs) {
       const brandData = brandDoc.data();
-      const perfumesCollection = collection(
-        db,
-        "brands",
-        brandDoc.id,
-        "perfumes"
-      );
+      const brandId = brandDoc.id;
+
+      // Obține colecția de parfumuri pentru brand
+      const perfumesCollection = collection(db, "brands", brandId, "perfumes");
       const perfumesSnapshot = await getDocs(perfumesCollection);
-      const perfumes = perfumesSnapshot.docs.map((perfumeDoc) =>
-        perfumeDoc.data()
-      );
+
+      // Map-ează documentele parfumurilor pentru a adăuga id-uri
+      const perfumes = perfumesSnapshot.docs.map((perfumeDoc) => {
+        const perfumeData = perfumeDoc.data();
+        return {
+          ...perfumeData,
+          id: perfumeDoc.id, // Adaugă id-ul unic generat de Firebase pentru parfum
+        };
+      });
+
       brandData.perfumes = perfumes;
-      brands.push(brandData);
+      brands.push({
+        ...brandData,
+        id: brandId, // Adaugă id-ul unic generat de Firebase pentru brand
+      });
     }
 
     res.status(200).send(brands);
@@ -153,45 +161,58 @@ app.get("/viewBrands", async (req, res) => {
   }
 });
 
-app.post("/deleteBrand", async (req, res) => {
+app.post("/deletePerfume", async (req, res) => {
   console.log(req.body);
   console.log("sunt aici");
-  const brandId = "3WzzynVac1WbTEyu5EAH"; // Schimbarea aici
-  console.log("brand id: " + brandId + "\n\n\n\n");
-  if (!brandId) {
-    // Răspunde cu un cod 400 și un mesaj de eroare dacă nu există brandId
-    return res.status(400).json({ message: "Parametrul brandId lipsește." });
+  const brandId = req.body.brandId;
+  const perfumeId = req.body.perfumeId;
+
+  if (!brandId || !perfumeId) {
+    return res
+      .status(400)
+      .json({ message: "Parametrii brandId și perfumeId sunt necesari." });
   }
 
-  // Crează o referință la colecția "brands"
   const brandsCollection = collection(db, "brands");
 
   try {
-    // Get the document using the brandId
-    const brandDoc = await getDoc(doc(brandsCollection, brandId));
-    console.log("continnutul este: \n" + brandDoc.id);
-    if (brandDoc.id !== brandId) {
-      // Documentul nu există, nu îl puteți șterge
+    // Get the brand document using the brandId
+    const brandDocRef = doc(brandsCollection, brandId);
+    const brandDoc = await getDoc(brandDocRef);
+
+    if (!brandDoc.exists()) {
       return res
         .status(404)
         .json({ message: "Brandul cu ID-ul specificat nu există." });
     }
-    // Obțineți documentul pentru a-l șterge
-    const brandRef = doc(brandsCollection, brandId);
-    const deleteResult = await deleteDoc(brandRef);
 
-    // Obține lista actualizată de branduri după ștergere
-    const updatedBrandsSnapshot = await getDocs(brandsCollection);
-    const updatedBrands = updatedBrandsSnapshot.docs.map((doc) => doc.data());
+    // Get the perfume document using the perfumeId from the "perfumes" subcollection
+    const perfumesCollection = collection(brandDocRef, "perfumes");
+    const perfumeDocRef = doc(perfumesCollection, perfumeId);
+    const perfumeDoc = await getDoc(perfumeDocRef);
 
-    // Răspunde cu lista actualizată de branduri și un cod 200
-    res.status(200).json(updatedBrands);
+    if (!perfumeDoc.exists()) {
+      return res
+        .status(404)
+        .json({ message: "Parfumul cu ID-ul specificat nu există în brand." });
+    }
+
+    // Delete the perfume document
+    await deleteDoc(perfumeDocRef);
+
+    // Get the updated list of perfumes after deletion
+    const updatedPerfumesSnapshot = await getDocs(perfumesCollection);
+    const updatedPerfumes = updatedPerfumesSnapshot.docs.map((doc) =>
+      doc.data()
+    );
+
+    // Răspunde cu lista actualizată de parfumuri și un cod 200
+    res.status(200).json(updatedPerfumes);
   } catch (error) {
-    console.error("Eroare în timpul ștergerii brandului:", error);
-    // Răspunde cu un cod 500 și un mesaj de eroare
+    console.error("Eroare în timpul ștergerii parfumului:", error);
     res
       .status(500)
-      .json({ message: "A apărut o eroare în timpul ștergerii brandului." });
+      .json({ message: "A apărut o eroare în timpul ștergerii parfumului." });
   }
 });
 

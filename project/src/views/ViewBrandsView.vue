@@ -9,6 +9,7 @@
 
 <script>
 import Brands from "../components/Brands.vue";
+import { requestOptions, base_url } from "@/utils/requestOptions";
 
 export default {
   name: "ViewBrandsView",
@@ -21,24 +22,14 @@ export default {
     };
   },
   created() {
-    let base_url = "http://localhost:3000/viewBrands";
-    let requestOptions = {
-      method: "GET",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-    };
-
-    fetch(base_url, requestOptions).then((res) => {
+    let localRequestOptions = { ...requestOptions };
+    localRequestOptions.method = "GET";
+    fetch(base_url + "viewBrands", localRequestOptions).then((res) => {
       if (res.status === 200) {
         console.log("");
         res.json().then((res) => {
           this.brands = res;
+          console.log("Received brands:", this.brands);
         });
         console.log("ar fi trebuit sa fi primit lista de branduri");
       } else {
