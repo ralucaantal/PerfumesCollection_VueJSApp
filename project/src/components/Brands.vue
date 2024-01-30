@@ -1,6 +1,6 @@
 <template>
   <div class="brands">
-    <h2>{{ brands.name }}</h2>
+    <h2>🫶🏻 {{ brands.name }}</h2>
     <!-- <div v-if="isLoggedIn">
       <button @click="deleteBrand(brands)">Delete Brand</button>
       <button @click="updateBrand(brands.brandId)">Update Brand</button>
@@ -81,11 +81,14 @@ export default {
 
     averagePrice(perfumes) {
       const total = perfumes.reduce((sum, perfume) => sum + perfume.price, 0);
-      return total / perfumes.length;
+      const average = total / perfumes.length;
+      return parseFloat(average.toFixed(2));
     },
+
     averageRating(perfumes) {
       const total = perfumes.reduce((sum, perfume) => sum + perfume.rating, 0);
-      return total / perfumes.length;
+      const average = total / perfumes.length;
+      return parseFloat(average.toFixed(2));
     },
   },
 };
