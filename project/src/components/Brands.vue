@@ -49,9 +49,9 @@ export default {
   },
   methods: {
     deletePerfume(perfumeId, brandId) {
-      console.log(perfumeId, brandId);
+      console.log("BRANDS.vue: PerfumeId: " + perfumeId, "BrandId: " + brandId);
       // Add logic to delete the brand
-      console.log(`Delete perfume with ID ${perfumeId}`);
+      //console.log(`Delete perfume with ID ${perfumeId}`);
 
       let localRequestOptions = { ...requestOptions };
       localRequestOptions.method = "POST";
@@ -62,9 +62,11 @@ export default {
 
       localRequestOptions.body = JSON.stringify(postData);
       fetch(base_url + "deletePerfume", localRequestOptions)
-        .then((res) => {
+        .then(async (res) => {
           if (res.status === 200) {
-            console.log("Parfumul a fost șters cu succes");
+            res.json().then((res) => {
+              this.$emit("updateBrands", res.message);
+            });
           } else {
             console.log("A apărut o eroare la ștergerea brandului");
           }
@@ -76,10 +78,7 @@ export default {
           );
         });
     },
-    // updateBrand(brandId) {
-    //   // Add logic to update the brand
-    //   console.log(`Update brand with ID ${brandId}`);
-    // },
+
     averagePrice(perfumes) {
       const total = perfumes.reduce((sum, perfume) => sum + perfume.price, 0);
       return total / perfumes.length;

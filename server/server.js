@@ -197,17 +197,9 @@ app.post("/deletePerfume", async (req, res) => {
         .json({ message: "Parfumul cu ID-ul specificat nu există în brand." });
     }
 
-    // Delete the perfume document
     await deleteDoc(perfumeDocRef);
 
-    // Get the updated list of perfumes after deletion
-    const updatedPerfumesSnapshot = await getDocs(perfumesCollection);
-    const updatedPerfumes = updatedPerfumesSnapshot.docs.map((doc) =>
-      doc.data()
-    );
-
-    // Răspunde cu lista actualizată de parfumuri și un cod 200
-    res.status(200).json(updatedPerfumes);
+    res.status(200).json({ message: "Parfumul a fost sters cu succes." });
   } catch (error) {
     console.error("Eroare în timpul ștergerii parfumului:", error);
     res

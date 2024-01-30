@@ -33,20 +33,20 @@ export default {
     const password = ref("");
     const message = ref("");
     function login() {
-      console.log("Am intrat in loginMethod...");
-      console.log(
-        "Vrei sa faci login cu email",
-        email.value,
-        "si parola",
-        password.value
-      );
+      // console.log("Am intrat in loginMethod...");
+      // console.log(
+      //   "Vrei sa faci login cu email",
+      //   email.value,
+      //   "si parola",
+      //   password.value
+      // );
 
       if (password.value == "") {
         message.value = "Parola nu poate fi nula";
       }
 
       if (email.value && password.value) {
-        console.log("e ok");
+        //console.log("e ok");
 
         let localRequestOptions = { ...requestOptions };
         localRequestOptions.method = "POST";
@@ -61,10 +61,10 @@ export default {
         fetch(base_url + "login", localRequestOptions)
           .then((res) => res.json())
           .then((data) => {
-            console.log(data.message);
-            console.log(data.isOk)
+            //console.log(data.message);
+            //console.log(data.isOk)
             if (data.isOk === "true") {
-              console.log("am intrat aici")
+              //console.log("am intrat aici")
               localStorage.setItem("token", data.message);
               router.replace("/");
               store.dispatch("login");
@@ -85,7 +85,7 @@ export default {
       () => store.state.message, // Urmează aceeași structură ca în exemplul anterior
       (newValue) => {
         message.value = newValue; // Actualizează variabila message cu noua valoare din store
-        console.log("Mesaj din store:", message.value); // Afișează mesajul în consolă
+        //console.log("Mesaj din store:", message.value); // Afișează mesajul în consolă
       }
     );
 

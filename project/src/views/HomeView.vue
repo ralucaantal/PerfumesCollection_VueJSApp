@@ -53,7 +53,7 @@ export default {
           //const decodedToken = jwt_decode(this.token);
           const decodedToken = jwt_decode(tokenValue);
 
-          console.log("Tokenul decodificat este: ", decodedToken);
+          //console.log("Tokenul decodificat este: ", decodedToken);
 
           return decodedToken && decodedToken.name
             ? decodedToken.name
