@@ -199,7 +199,18 @@ app.post("/deletePerfume", async (req, res) => {
 
     await deleteDoc(perfumeDocRef);
 
-    res.status(200).json({ message: "Parfumul a fost sters cu succes." });
+    //res.status(200).json({ message: "Parfumul a fost sters cu succes." });
+
+    const updatedPerfumesSnapshot = await getDocs(perfumesCollection);
+    const isEmpty = updatedPerfumesSnapshot.empty;
+
+    // Dacă colecția este goală, șterge brandul
+    if (isEmpty) {
+      await deleteDoc(brandDocRef);
+      res.status(200).json({ message: "Parfumul a fost șters cu succes." });
+    } else {
+      res.status(200).json({ message: "Parfumul a fost șters cu succes." });
+    }
   } catch (error) {
     console.error("Eroare în timpul ștergerii parfumului:", error);
     res

@@ -24,7 +24,9 @@
         <button @click="deletePerfume(perfume.id, brands.id)">
           Delete Perfume
         </button>
-        <button @click="updatePerfume(perfume.id)">Update Perfume</button>
+        <button @click="updatePerfume(perfume.id, brands.id)">
+          Update Perfume
+        </button>
       </div>
     </div>
   </div>
