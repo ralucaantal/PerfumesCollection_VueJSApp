@@ -3,6 +3,7 @@ import HomeView from "../views/HomeView";
 import RegisterView from "../views/RegisterView";
 import LoginView from "../views/LoginView";
 import ViewBrandsView from "../views/ViewBrandsView";
+import AddABrandView from "../views/AddABrandView";
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: "/viewBrands",
     name: "viewBrands",
     component: ViewBrandsView,
+  },
+  {
+    path: "/addABrand",
+    name: "addABrand",
+    component: AddABrandView,
   },
 ];
 
