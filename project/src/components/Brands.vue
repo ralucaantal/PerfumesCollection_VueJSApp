@@ -15,8 +15,9 @@
     </div>
     <p v-if="brands.perfumes">
       Founded on {{ brands.startDate }} in {{ brands.country }} and offering
-      {{ brands.perfumes.length }} perfumes:
+      {{ brands.perfumes.length }} perfumes.
     </p>
+    <button v-if="isLoggedIn">Add A Perfume</button>
     <template v-if="showPerfumes && brands.id === selectedBrandId">
       <div v-for="perfume in brands.perfumes" :key="perfume.id" class="brands">
         <h3>{{ perfume.name }}</h3>

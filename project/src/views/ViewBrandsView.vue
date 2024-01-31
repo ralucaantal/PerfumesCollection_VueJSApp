@@ -2,7 +2,7 @@
   <div class="homeBrands">
     <div class="brands-list">
       <h1>Brands:</h1>
-      <button v-if="isLoggedIn" @click="addBrand">Add Brand</button>
+      <button v-if="isLoggedIn" @click="addBrand">Add/Update Brand</button>
       <div v-for="i in brands" :key="i" class="brands-container">
         <Brands :brands="i" @updateBrands="handleUpdateBrands" />
       </div>

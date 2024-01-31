@@ -1,8 +1,13 @@
 <template>
   <div class="homeBrands">
     <div class="mainBrands">
-      <BrandsTable :brands="brands" class="brands-table" />
-      <form @submit.prevent="addABrand">
+      <BrandsTable
+        :brands="brands"
+        class="brands-table"
+        @rowClick="editBrand"
+      />
+      <button v-if="isLoggedIn" @click="toggleForm">Add Brand</button>
+      <form v-show="showForm" @submit.prevent="addABrand">
         <h1>Add a New Brand</h1>
         <input
           type="text"
@@ -36,10 +41,23 @@
 import { ref } from "vue";
 import { requestOptions, base_url } from "@/utils/requestOptions";
 import BrandsTable from "../components/BrandsTable.vue";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
     BrandsTable,
+  },
+  computed: {
+    ...mapGetters(["isLoggedIn"]),
+  },
+  methods: {
+    toggleForm() {
+      this.showForm = !this.showForm;
+    },
+    editBrand(selectedBrand) {
+      this.selectedBrandForEdit = selectedBrand;
+      this.showForm = true;
+    },
   },
   setup() {
     const name = ref("");
@@ -47,6 +65,8 @@ export default {
     const message = ref("");
     const country = ref("");
     const brands = ref([]);
+
+    const showForm = ref(false);
 
     function addABrand() {
       if (name.value === "" || foundingDate.value === "") {
@@ -104,7 +124,15 @@ export default {
     // Initial loading of brands
     getCurrentBrands();
 
-    return { name, foundingDate, country, message, addABrand, brands };
+    return {
+      name,
+      foundingDate,
+      country,
+      message,
+      addABrand,
+      brands,
+      showForm,
+    };
   },
 };
 </script>
