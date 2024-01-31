@@ -27,20 +27,6 @@ export default {
   computed: {
     ...mapGetters(["isLoggedIn"]),
   },
-  created() {
-    let localRequestOptions = { ...requestOptions };
-    localRequestOptions.method = "GET";
-    fetch(base_url + "viewBrands", localRequestOptions).then((res) => {
-      if (res.status === 200) {
-        res.json().then((res) => {
-          this.brands = res;
-          console.log("Received brands:", this.brands);
-        });
-      } else {
-        console.log("A aparut o eroare");
-      }
-    });
-  },
   methods: {
     handleUpdateBrands(message) {
       console.log("ViewBrandsView.vue handleUpdateBrands: " + message);
@@ -50,20 +36,23 @@ export default {
       console.log("vreau sa adaug un Brand");
       router.replace("/addABrand");
     },
+    getCurrentBrands() {
+      let localRequestOptions = { ...requestOptions };
+      localRequestOptions.method = "GET";
+      fetch(base_url + "viewBrands", localRequestOptions).then((res) => {
+        if (res.status === 200) {
+          res.json().then((res) => {
+            this.brands = res;
+            console.log("Received brands:", this.brands);
+          });
+        } else {
+          console.log("A aparut o eroare");
+        }
+      });
+    },
   },
-  getCurrentBrands() {
-    let localRequestOptions = { ...requestOptions };
-    localRequestOptions.method = "GET";
-    fetch(base_url + "viewBrands", localRequestOptions).then((res) => {
-      if (res.status === 200) {
-        res.json().then((res) => {
-          this.brands = res;
-          console.log("Received brands:", this.brands);
-        });
-      } else {
-        console.log("A aparut o eroare");
-      }
-    });
+  created() {
+    this.getCurrentBrands();
   },
 };
 </script>
