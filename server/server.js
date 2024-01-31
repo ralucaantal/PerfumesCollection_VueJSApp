@@ -223,22 +223,26 @@ app.post("/deletePerfume", async (req, res) => {
 app.post("/addABrand", async (req, res) => {
   console.log(req.body);
   const name = req.body.name;
-  const startDate = req.body.foundingDate;
+  const startDate = req.body.startDate;
+  const country = req.body.country;
 
   try {
     const brandsCollection = collection(db, "brands");
 
-    // Add a new brand document to the 'brands' collection
-    const brandDocRef = await setDoc(doc(brandsCollection), {
+    const brandDocRef = await addDoc(brandsCollection, {
       name: name,
       startDate: startDate,
+      country:country
     });
 
-    // Reference to the 'perfumes' subcollection within the brand
-    const perfumesCollection = collection(brandDocRef, "perfumes");
+    // const perfumesCollection = collection(
+    //   db,
+    //   "brands",
+    //   brandDocRef.id,
+    //   "perfumes"
+    // );
 
-    // Add an empty document to the 'perfumes' subcollection
-    await setDoc(doc(perfumesCollection), {});
+    // await addDoc(perfumesCollection, {});
 
     console.log("Brand and Perfumes collection added with ID:", brandDocRef.id);
     res.status(200).json({ message: "Brand and Perfumes added successfully." });

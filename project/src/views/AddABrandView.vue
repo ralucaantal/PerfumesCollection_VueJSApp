@@ -14,6 +14,12 @@
         class="input-field"
         v-model="foundingDate"
       />
+      <input
+        type="text"
+        placeholder="Country"
+        class="input-field"
+        v-model="country"
+      />
 
       <div class="login-btn">
         <button class="btn1">Add</button>
@@ -27,11 +33,13 @@
 import { ref } from "vue";
 import { requestOptions, base_url } from "@/utils/requestOptions";
 import router from "@/router";
+
 export default {
   setup() {
     const name = ref("");
     const foundingDate = ref("");
     const message = ref("");
+    const country = ref("");
 
     // function convertToDate(dateString) {
     //   // Convert "dd/mm/yyyy" la formatul Date
@@ -49,12 +57,8 @@ export default {
         let postData = {
           name: name.value,
           startDate: foundingDate.value,
+          country: country.value,
         };
-
-        if (!postData.startDate) {
-          message.value = "Invalid founding date format.";
-          return;
-        }
 
         localRequestOptions.body = JSON.stringify(postData);
 
@@ -62,7 +66,7 @@ export default {
           .then(async (res) => {
             if (res.status === 200) {
               res.json().then((res) => {
-                this.$emit("updateBrands", res.message);
+                console.log(res);
                 router.replace("/viewBrands");
               });
             } else {
@@ -78,7 +82,7 @@ export default {
       }
     }
 
-    return { name, foundingDate, message, addABrand };
+    return { name, foundingDate, country, message, addABrand };
   },
 };
 </script>

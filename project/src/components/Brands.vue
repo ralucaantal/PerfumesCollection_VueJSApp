@@ -10,7 +10,7 @@
       <p>Average Rating: {{ averageRating(brands.perfumes) }} ⭐</p>
     </div>
     <p v-if="brands.perfumes">
-      Founded on {{ brands.startDate }} and offering
+      Founded on {{ brands.startDate }} in {{ brands.country }} and offering
       {{ brands.perfumes.length }} perfumes:
     </p>
     <div v-for="perfume in brands.perfumes" :key="perfume.id" class="brands">

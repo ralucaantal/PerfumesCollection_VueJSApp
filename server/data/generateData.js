@@ -42,11 +42,10 @@ const genderList = ["man", "woman", "uni"];
 const generateBrands = (brandsNo) => {
   const brands = [];
   for (let i = 0; i < brandsNo; i++) {
-    const brandId = chance.guid();
     const brand = {
-      brandId: brandId,
       name: chance.word({ syllables: 3 }),
       startDate: chance.date({ string: true, american: false }),
+      country: chance.country({ full: true }),
     };
     brands.push(brand);
   }
@@ -60,7 +59,6 @@ const generatePerfumes = (brands, perfumesNo) => {
       const brand = chance.pickone(brands);
       const perfumeId = chance.guid();
       const perfume = {
-        brandId: brand.brandId,
         name: chance.word({ syllables: 2 }),
         ingredients: chance.pickset(ingredientsList, 5),
         gender: chance.pickone(genderList),
