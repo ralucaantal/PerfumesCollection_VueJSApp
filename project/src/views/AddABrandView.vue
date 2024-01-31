@@ -1,55 +1,56 @@
 <template>
-  <div class="main" @submit.prevent="addABrand">
-    <form>
-      <h1>Add a New Brand</h1>
-      <input
-        type="text"
-        placeholder="Name"
-        class="input-field"
-        v-model="name"
-      />
-      <input
-        type="text"
-        placeholder="Founding Date: dd/mm/yyyy"
-        class="input-field"
-        v-model="foundingDate"
-      />
-      <input
-        type="text"
-        placeholder="Country"
-        class="input-field"
-        v-model="country"
-      />
+  <div class="homeBrands">
+    <div class="mainBrands">
+      <BrandsTable :brands="brands" class="brands-table" />
+      <form @submit.prevent="addABrand">
+        <h1>Add a New Brand</h1>
+        <input
+          type="text"
+          placeholder="Name"
+          class="input-field"
+          v-model="name"
+        />
+        <input
+          type="text"
+          placeholder="Founding Date: dd/mm/yyyy"
+          class="input-field"
+          v-model="foundingDate"
+        />
+        <input
+          type="text"
+          placeholder="Country"
+          class="input-field"
+          v-model="country"
+        />
 
-      <div class="login-btn">
-        <button class="btn1">Add</button>
-      </div>
-      <p>{{ message }}</p>
-    </form>
+        <div class="login-btn">
+          <button class="btn1">Add</button>
+        </div>
+        <p>{{ message }}</p>
+      </form>
+    </div>
   </div>
 </template>
 
 <script>
 import { ref } from "vue";
 import { requestOptions, base_url } from "@/utils/requestOptions";
-import router from "@/router";
+import BrandsTable from "../components/BrandsTable.vue";
 
 export default {
+  components: {
+    BrandsTable,
+  },
   setup() {
     const name = ref("");
     const foundingDate = ref("");
     const message = ref("");
     const country = ref("");
-
-    // function convertToDate(dateString) {
-    //   // Convert "dd/mm/yyyy" la formatul Date
-    //   const [day, month, year] = dateString.split("/");
-    //   return new Date(`${year}-${month}-${day}`);
-    // }
+    const brands = ref([]);
 
     function addABrand() {
       if (name.value === "" || foundingDate.value === "") {
-        message.value = "Brand informations cannot be null.";
+        message.value = "Brand information cannot be null.";
       } else if (name.value && foundingDate.value) {
         let localRequestOptions = { ...requestOptions };
         localRequestOptions.method = "POST";
@@ -67,22 +68,51 @@ export default {
             if (res.status === 200) {
               res.json().then((res) => {
                 console.log(res);
-                router.replace("/viewBrands");
+                message.value = "Brand added successfully.";
+                getCurrentBrands();
               });
             } else {
-              console.log("A apărut o eroare la adaugarea");
+              console.log("An error occurred while adding the brand");
             }
           })
           .catch((error) => {
-            console.error(
-              "Eroare în timpul cererii de ștergere a brandului:",
-              error
-            );
+            console.error("Error during brand addition:", error);
           });
       }
     }
 
-    return { name, foundingDate, country, message, addABrand };
+    function getCurrentBrands() {
+      let localRequestOptions = { ...requestOptions };
+      localRequestOptions.method = "GET";
+      fetch(base_url + "viewBrands", localRequestOptions)
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            console.log("An error occurred while obtaining brands");
+          }
+        })
+        .then((data) => {
+          brands.value = data;
+          console.log("Received brands:", brands.value);
+        })
+        .catch((error) => {
+          console.error("Error during brand retrieval:", error);
+        });
+    }
+
+    // Initial loading of brands
+    getCurrentBrands();
+
+    return { name, foundingDate, country, message, addABrand, brands };
   },
 };
 </script>
+
+<style>
+.mainBrands {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+</style>

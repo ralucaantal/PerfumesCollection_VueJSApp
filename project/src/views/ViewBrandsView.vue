@@ -1,9 +1,11 @@
 <template>
-  <div class="home">
-    <h1>Brands:</h1>
-    <button v-if="isLoggedIn" @click="addBrand">Add Brand</button>
-    <div v-for="i in brands" :key="i">
-      <Brands :brands="i" @updateBrands="handleUpdateBrands" />
+  <div class="homeBrands">
+    <div class="brands-list">
+      <h1>Brands:</h1>
+      <button v-if="isLoggedIn" @click="addBrand">Add Brand</button>
+      <div v-for="i in brands" :key="i" class="brands-container">
+        <Brands :brands="i" @updateBrands="handleUpdateBrands" />
+      </div>
     </div>
   </div>
 </template>
@@ -56,3 +58,10 @@ export default {
   },
 };
 </script>
+
+<style>
+.homeBrans {
+  display: flex;
+  justify-content: space-around;
+}
+</style>
