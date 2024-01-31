@@ -10,6 +10,7 @@ import {
   getDocs,
   addDoc,
   getDoc,
+  setDoc,
 } from "firebase/firestore";
 import { db } from "./firebase/firebase.js";
 import expressPinoLogger from "express-pino-logger";
@@ -216,6 +217,36 @@ app.post("/deletePerfume", async (req, res) => {
     res
       .status(500)
       .json({ message: "A apărut o eroare în timpul ștergerii parfumului." });
+  }
+});
+
+app.post("/addABrand", async (req, res) => {
+  console.log(req.body);
+  const name = req.body.name;
+  const startDate = req.body.foundingDate;
+
+  try {
+    const brandsCollection = collection(db, "brands");
+
+    // Add a new brand document to the 'brands' collection
+    const brandDocRef = await setDoc(doc(brandsCollection), {
+      name: name,
+      startDate: startDate,
+    });
+
+    // Reference to the 'perfumes' subcollection within the brand
+    const perfumesCollection = collection(brandDocRef, "perfumes");
+
+    // Add an empty document to the 'perfumes' subcollection
+    await setDoc(doc(perfumesCollection), {});
+
+    console.log("Brand and Perfumes collection added with ID:", brandDocRef.id);
+    res.status(200).json({ message: "Brand and Perfumes added successfully." });
+  } catch (error) {
+    console.error("Error adding brand and perfumes collection:", error);
+    res.status(500).json({
+      message: "Error adding brand and perfumes collection",
+    });
   }
 });
 

@@ -17,6 +17,7 @@
       <div class="login-btn">
         <button class="btn1">Login</button>
       </div>
+      <p>{{ message }}</p>
     </form>
   </div>
 </template>
@@ -41,8 +42,8 @@ export default {
       //   password.value
       // );
 
-      if (password.value == "") {
-        message.value = "Parola nu poate fi nula";
+      if (password.value == "" || email.value == "") {
+        message.value = "Password or email cannot be null.";
       }
 
       if (email.value && password.value) {
@@ -70,7 +71,7 @@ export default {
               store.dispatch("login");
             } else {
               message.value =
-                "Autentificare nereușită. Verificați datele introduse.";
+                "Authentication failed. Check the entered data.";
             }
           });
       } else {
@@ -89,9 +90,8 @@ export default {
       }
     );
 
-    return { email, password, login };
+    return { email, password, login, message };
   },
-  
 };
 </script>
 
