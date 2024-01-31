@@ -1,10 +1,9 @@
 <template>
   <div class="brands">
     <h2>🫶🏻 {{ brands.name }}</h2>
-    <!-- <div v-if="isLoggedIn">
-      <button @click="deleteBrand(brands)">Delete Brand</button>
-      <button @click="updateBrand(brands.brandId)">Update Brand</button>
-    </div> -->
+    <div v-if="isLoggedIn">
+      <button @click="deleteBrand(brands.id)">Delete Brand</button>
+    </div>
     <div v-if="brands.perfumes && brands.perfumes.length > 0">
       <p>Average Price: {{ averagePrice(brands.perfumes) }} 💰</p>
       <p>Average Rating: {{ averageRating(brands.perfumes) }} ⭐</p>
@@ -64,6 +63,36 @@ export default {
 
       localRequestOptions.body = JSON.stringify(postData);
       fetch(base_url + "deletePerfume", localRequestOptions)
+        .then(async (res) => {
+          if (res.status === 200) {
+            res.json().then((res) => {
+              this.$emit("updateBrands", res.message);
+            });
+          } else {
+            console.log("A apărut o eroare la ștergerea brandului");
+          }
+        })
+        .catch((error) => {
+          console.error(
+            "Eroare în timpul cererii de ștergere a brandului:",
+            error
+          );
+        });
+    },
+
+    deleteBrand( brandId) {
+      console.log("BRANDS.vue: "+"BrandId: " + brandId);
+      // Add logic to delete the brand
+      //console.log(`Delete perfume with ID ${perfumeId}`);
+
+      let localRequestOptions = { ...requestOptions };
+      localRequestOptions.method = "POST";
+      let postData = {
+        brandId: brandId,
+      };
+
+      localRequestOptions.body = JSON.stringify(postData);
+      fetch(base_url + "deleteBrand", localRequestOptions)
         .then(async (res) => {
           if (res.status === 200) {
             res.json().then((res) => {

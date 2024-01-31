@@ -254,6 +254,48 @@ app.post("/addABrand", async (req, res) => {
   }
 });
 
+app.post("/deleteBrand", async (req, res) => {
+  console.log(req.body);
+  console.log("sunt aici");
+  const brandId = req.body.brandId;
+
+  if (!brandId) {
+    return res
+      .status(400)
+      .json({ message: "Parametrii brandId și perfumeId sunt necesari." });
+  }
+
+  const brandsCollection = collection(db, "brands");
+
+  try {
+    // Get the brand document using the brandId
+    const brandDocRef = doc(brandsCollection, brandId);
+    const brandDoc = await getDoc(brandDocRef);
+
+    if (!brandDoc.exists()) {
+      return res
+        .status(404)
+        .json({ message: "Brandul cu ID-ul specificat nu există." });
+    }
+
+    // Get the perfume document using the perfumeId from the "perfumes" subcollection
+    const perfumesCollection = collection(brandDocRef, "perfumes");
+
+    const perfumesSnapshot = await getDocs(perfumesCollection);
+    const deletePromises = perfumesSnapshot.docs.map((doc) => deleteDoc(doc.ref));
+    await Promise.all(deletePromises);
+
+    await deleteDoc(brandDocRef);
+
+    res.status(200).json({ message: "Brandul și parfumurile au fost șterse cu succes." });
+  } catch (error) {
+    console.error("Eroare în timpul ștergerii parfumului:", error);
+    res
+      .status(500)
+      .json({ message: "A apărut o eroare în timpul ștergerii parfumului." });
+  }
+});
+
 app.listen(port, () => {
   logger.info(`Serverul rulează la adresa http://localhost:${port}`);
 });
