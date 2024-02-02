@@ -1,26 +1,21 @@
 <template>
   <div>
-    <h1>Perfumes for Brand {{ brandName }}</h1>
+   <h1>{{brandId}}</h1>
   </div>
 </template>
 
 <script>
+
+import { useStore } from "vuex";
 export default {
-  data() {
-    return {
-      brandId: null,
-      brandName: null,
-    };
+  setup() {
+    
   },
+
   created() {
-    if (this.$route && this.$route.params) {
-      console.log(this.$route.params);
-      // Obține brandId din parametrii
-      this.brandId = this.$route.params.brandId;
-      this.brandName = this.$route.params.brandName;
-    } else {
-      console.error("Ruta sau parametrii rutei sunt indefiniți.");
-    }
+    const store = useStore();
+    console.log(store.state.brandId);
+    console.log(store.state.brandName);
   },
 };
 </script>

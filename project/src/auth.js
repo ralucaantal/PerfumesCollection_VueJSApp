@@ -5,11 +5,17 @@ export default createStore({
   state() {
     return {
       isLoggedIn: false,
+      brandId: null,
+      brandName: null,
     };
   },
   mutations: {
     setLoggedIn(state, isLoggedIn) {
       state.isLoggedIn = isLoggedIn;
+    },
+    setParams(state, { brandId, brandName }) {
+      state.brandId = brandId;
+      state.brandName = brandName;
     },
   },
   actions: {
@@ -41,8 +47,16 @@ export default createStore({
         resolve(); // Resolve promisiunea pentru a semnala finalizarea acțiunii
       });
     },
+    transferData({ commit }, { brandId, brandName }) {
+      console.log("Datele din auth.js: " + brandId + " " + brandName)
+      commit("setParams", { brandId, brandName });
+    },
   },
   getters: {
     isLoggedIn: (state) => state.isLoggedIn,
+    getParams: (state) => ({
+      brandId: state.brandId,
+      brandName: state.brandName,
+    }),
   },
 });

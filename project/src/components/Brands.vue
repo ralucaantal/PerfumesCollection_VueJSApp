@@ -45,7 +45,8 @@
 import { mapGetters } from "vuex";
 import { requestOptions, base_url } from "@/utils/requestOptions";
 import router from "@/router";
-
+//import { mapActions } from 'vuex';
+//import { useStore } from "vuex";
 export default {
   name: "ViewBrands",
   props: {
@@ -67,12 +68,16 @@ export default {
     },
   },
   methods: {
+   // ...mapActions('dataTransfer', ['transferData']),
     addUpdatePerfume(brandId, brandName) {
-      console.log("vreau sa adaug un parfum la brandul cu id:" + brandId);
-      router.push({
-        name: "addUpdatePerfume",
-        params: { brandId: brandId, brandName: brandName },
-      });
+     // const store = useStore();
+      console.log("vreau sa adaug un parfum la brandul cu id:" + brandId + " "+  brandName);
+      router.replace("/addUpdatePerfume")
+      this.$store.dispatch("transferData", { brandId, brandName });
+      // router.push({
+      //   name: "addUpdatePerfume",
+      //   params: { brandId: brandId, brandName: brandName },
+      // });
     },
     deletePerfume(perfumeId, brandId) {
       console.log("BRANDS.vue: PerfumeId: " + perfumeId, "BrandId: " + brandId);
