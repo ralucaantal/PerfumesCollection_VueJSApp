@@ -4,11 +4,11 @@
       <BrandsTable
         :brands="brands"
         class="brands-table"
-        @rowClick="editBrand"
+        @rowClick="editABrand"
       />
       <button v-if="isLoggedIn" @click="toggleForm">Add Brand</button>
-      <form v-show="showForm" @submit.prevent="addABrand">
-        <h1>Add a New Brand</h1>
+      <form v-show="showForm" @submit.prevent="handleSubmit">
+        <h1>{{ editMode ? "Edit" : "Add" }} a Brand</h1>
         <input
           type="text"
           placeholder="Name"
@@ -29,7 +29,7 @@
         />
 
         <div class="login-btn">
-          <button class="btn1">Add</button>
+          <button class="btn1">{{ editMode ? "Save" : "Add" }}</button>
         </div>
         <p>{{ message }}</p>
       </form>
@@ -50,14 +50,6 @@ export default {
   computed: {
     ...mapGetters(["isLoggedIn"]),
   },
-  methods: {
-    toggleForm() {
-      this.showForm = !this.showForm;
-    },
-    editBrand(selectedBrand) {
-      console.log("Vreau sa editez brandul cu id-ul: " + selectedBrand.id);
-    },
-  },
   setup() {
     const name = ref("");
     const foundingDate = ref("");
@@ -66,12 +58,19 @@ export default {
     const brands = ref([]);
 
     const showForm = ref(false);
+    const editMode = ref(false);
+
+    const selectedBrandBD = ref(null);
 
     function addABrand() {
       let currentDate = new Date();
       let selectedDate = new Date(foundingDate.value);
 
-      if (name.value === "" || foundingDate.value === "") {
+      if (
+        name.value === "" ||
+        foundingDate.value === "" ||
+        country.value === ""
+      ) {
         message.value = "Brand information cannot be null.";
       } else if (selectedDate > currentDate) {
         message.value = "The brand's founding date must not be in the future!";
@@ -128,6 +127,101 @@ export default {
         });
     }
 
+    function editABrand(selectedBrand) {
+      console.log("Editing brand with id: " + selectedBrand.id);
+
+      name.value = selectedBrand.name;
+      foundingDate.value = selectedBrand.startDate;
+      country.value = selectedBrand.country;
+
+      selectedBrandBD.value = selectedBrand;
+
+      editMode.value = true;
+
+      // Show the form
+      showForm.value = true;
+    }
+
+    function editBrandInBD(selectedBrand) {
+      console.log(selectedBrand.id);
+
+      let currentDate = new Date();
+      let selectedDate = new Date(foundingDate.value);
+
+      if (
+        name.value === "" ||
+        foundingDate.value === "" ||
+        country.value === ""
+      ) {
+        message.value = "Brand information cannot be null.";
+      } else if (selectedDate > currentDate) {
+        message.value = "The brand's founding date must not be in the future!";
+      } else if (name.value && foundingDate.value && country.value) {
+        let localRequestOptions = { ...requestOptions };
+        localRequestOptions.method = "POST";
+
+        let postData = {
+          id: selectedBrand.id,
+          name: name.value,
+          startDate: foundingDate.value,
+          country: country.value,
+        };
+
+        localRequestOptions.body = JSON.stringify(postData);
+
+        fetch(base_url + "editBrand", localRequestOptions)
+          .then(async (res) => {
+            if (res.status === 200) {
+              res.json().then((res) => {
+                console.log(res);
+                message.value = "Brand edited successfully.";
+                resetForm();
+                toggleForm();
+                getCurrentBrands();
+              });
+            } else {
+              message.value = "An error occurred while editing the brand";
+            }
+          })
+          .catch((error) => {
+            console.error("Error during brand addition:", error);
+          });
+      }
+    }
+
+    function handleSubmit() {
+      if (editMode.value) {
+        editBrandInBD({
+          id: selectedBrandBD.value.id,
+          name: name.value,
+          startDate: foundingDate.value,
+          country: country.value,
+        });
+      } else {
+        addABrand();
+      }
+    }
+
+    function toggleForm() {
+      showForm.value = !showForm.value;
+
+      // Reset the form and edit mode when hiding the form
+      if (!showForm.value) {
+        resetForm();
+      }
+    }
+
+    function resetForm() {
+      // Reset form fields
+      name.value = "";
+      foundingDate.value = "";
+      country.value = "";
+
+      editMode.value = false;
+
+      message.value = "";
+    }
+
     // Initial loading of brands
     getCurrentBrands();
 
@@ -139,6 +233,12 @@ export default {
       addABrand,
       brands,
       showForm,
+      handleSubmit,
+      toggleForm,
+      resetForm,
+      editABrand,
+      editMode,
+      selectedBrandBD,
     };
   },
 };

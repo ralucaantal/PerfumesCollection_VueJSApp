@@ -11,6 +11,7 @@ import {
   addDoc,
   getDoc,
   setDoc,
+  updateDoc
 } from "firebase/firestore";
 import { db } from "./firebase/firebase.js";
 import expressPinoLogger from "express-pino-logger";
@@ -232,17 +233,8 @@ app.post("/addABrand", async (req, res) => {
     const brandDocRef = await addDoc(brandsCollection, {
       name: name,
       startDate: startDate,
-      country:country
+      country: country,
     });
-
-    // const perfumesCollection = collection(
-    //   db,
-    //   "brands",
-    //   brandDocRef.id,
-    //   "perfumes"
-    // );
-
-    // await addDoc(perfumesCollection, {});
 
     console.log("Brand and Perfumes collection added with ID:", brandDocRef.id);
     res.status(200).json({ message: "Brand and Perfumes added successfully." });
@@ -250,6 +242,33 @@ app.post("/addABrand", async (req, res) => {
     console.error("Error adding brand and perfumes collection:", error);
     res.status(500).json({
       message: "Error adding brand and perfumes collection",
+    });
+  }
+});
+
+app.post("/editBrand", async (req, res) => {
+  console.log(req.body);
+  const id = req.body.id;
+  const name = req.body.name;
+  const startDate = req.body.startDate;
+  const country = req.body.country;
+
+  try {
+    const brandsCollection = collection(db, "brands");
+    const brandDocRef = doc(brandsCollection, id); 
+
+    await updateDoc(brandDocRef, {
+      name: name,
+      startDate: startDate,
+      country: country,
+    });
+
+    console.log("Brand updated with ID:", id);
+    res.status(200).json({ message: "Brand updated successfully." });
+  } catch (error) {
+    console.error("Error editing brand: ", error);
+    res.status(500).json({
+      message: "Error editing brand",
     });
   }
 });
@@ -282,12 +301,16 @@ app.post("/deleteBrand", async (req, res) => {
     const perfumesCollection = collection(brandDocRef, "perfumes");
 
     const perfumesSnapshot = await getDocs(perfumesCollection);
-    const deletePromises = perfumesSnapshot.docs.map((doc) => deleteDoc(doc.ref));
+    const deletePromises = perfumesSnapshot.docs.map((doc) =>
+      deleteDoc(doc.ref)
+    );
     await Promise.all(deletePromises);
 
     await deleteDoc(brandDocRef);
 
-    res.status(200).json({ message: "Brandul și parfumurile au fost șterse cu succes." });
+    res
+      .status(200)
+      .json({ message: "Brandul și parfumurile au fost șterse cu succes." });
   } catch (error) {
     console.error("Eroare în timpul ștergerii parfumului:", error);
     res
