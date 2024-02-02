@@ -4,6 +4,7 @@ import RegisterView from "../views/RegisterView";
 import LoginView from "../views/LoginView";
 import ViewBrandsView from "../views/ViewBrandsView";
 import AddABrandView from "../views/AddABrandView";
+import AddUpdatePerfumeView from "../views/AddUpdatePerfumeView";
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: "/addABrand",
     name: "addABrand",
     component: AddABrandView,
+  },
+  {
+    path: "/addUpdatePerfume",
+    name: "addUpdatePerfume",
+    component: AddUpdatePerfumeView,
   },
 ];
 

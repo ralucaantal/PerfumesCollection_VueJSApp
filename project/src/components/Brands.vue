@@ -17,7 +17,9 @@
       Founded on {{ brands.startDate }} in {{ brands.country }} and offering
       {{ brands.perfumes.length }} perfumes.
     </p>
-    <button v-if="isLoggedIn">Add A Perfume</button>
+    <button v-if="isLoggedIn" @click="addUpdatePerfume(brands.id, brands.name)">
+      Add/Update A Perfume
+    </button>
     <template v-if="showPerfumes && brands.id === selectedBrandId">
       <div v-for="perfume in brands.perfumes" :key="perfume.id" class="brands">
         <h3>{{ perfume.name }}</h3>
@@ -30,9 +32,9 @@
           <button @click="deletePerfume(perfume.id, brands.id)">
             Delete Perfume
           </button>
-          <button @click="updatePerfume(perfume.id, brands.id)">
+          <!-- <button @click="updatePerfume(perfume.id, brands.id)">
             Update Perfume
-          </button>
+          </button> -->
         </div>
       </div>
     </template>
@@ -42,6 +44,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { requestOptions, base_url } from "@/utils/requestOptions";
+import router from "@/router";
 
 export default {
   name: "ViewBrands",
@@ -64,9 +67,12 @@ export default {
     },
   },
   methods: {
-    addPerfume(brandId) {
+    addUpdatePerfume(brandId, brandName) {
       console.log("vreau sa adaug un parfum la brandul cu id:" + brandId);
-      //router.replace("/addPerfume");
+      router.push({
+        name: "addUpdatePerfume",
+        params: { brandId: brandId, brandName: brandName },
+      });
     },
     deletePerfume(perfumeId, brandId) {
       console.log("BRANDS.vue: PerfumeId: " + perfumeId, "BrandId: " + brandId);
@@ -144,9 +150,12 @@ export default {
     togglePerfumesVisibility(brandId) {
       if (this.brands && this.brands.id && this.selectedBrandId === brandId) {
         this.showPerfumes = !this.showPerfumes;
-      } else {
+      } else if (this.brands && this.brands.id) {
         this.showPerfumes = true;
         this.selectedBrandId = brandId;
+      } else {
+        // Handle the case when this.brands is null or undefined
+        console.error("Invalid 'brands' object:", this.brands);
       }
     },
   },
