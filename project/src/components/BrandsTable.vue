@@ -10,7 +10,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="brand in brands" :key="brand.id">
+        <tr
+          v-for="brand in brands"
+          :key="brand.id"
+          @click="handleRowClick(brand)"
+        >
           <td>{{ brand.name }}</td>
           <td>{{ brand.startDate }}</td>
           <td>{{ brand.country }}</td>
@@ -24,6 +28,11 @@
 export default {
   props: {
     brands: Array,
+  },
+  methods: {
+    handleRowClick(brand) {
+      this.$emit("rowClick", brand);
+    },
   },
 };
 </script>

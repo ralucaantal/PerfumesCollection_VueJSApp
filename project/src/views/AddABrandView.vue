@@ -55,8 +55,7 @@ export default {
       this.showForm = !this.showForm;
     },
     editBrand(selectedBrand) {
-      this.selectedBrandForEdit = selectedBrand;
-      this.showForm = true;
+      console.log("Vreau sa editez brandul cu id-ul: " + selectedBrand.id);
     },
   },
   setup() {
@@ -69,8 +68,13 @@ export default {
     const showForm = ref(false);
 
     function addABrand() {
+      let currentDate = new Date();
+      let selectedDate = new Date(foundingDate.value);
+
       if (name.value === "" || foundingDate.value === "") {
         message.value = "Brand information cannot be null.";
+      } else if (selectedDate > currentDate) {
+        message.value = "The brand's founding date must not be in the future!";
       } else if (name.value && foundingDate.value) {
         let localRequestOptions = { ...requestOptions };
         localRequestOptions.method = "POST";
@@ -89,6 +93,9 @@ export default {
               res.json().then((res) => {
                 console.log(res);
                 message.value = "Brand added successfully.";
+                name.value = "";
+                foundingDate.value = "";
+                country.value = "";
                 getCurrentBrands();
               });
             } else {
