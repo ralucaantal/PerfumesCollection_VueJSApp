@@ -3,12 +3,16 @@ export default {
     return {
       brandId: null,
       brandName: null,
+      perfumes: [],
     };
   },
   mutations: {
     setParams(state, { brandId, brandName }) {
       state.brandId = brandId;
       state.brandName = brandName;
+    },
+    setPerfumes(state, perfumes) {
+      state.perfumes = perfumes;
     },
   },
   actions: {

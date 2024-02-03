@@ -11,7 +11,7 @@ import {
   addDoc,
   getDoc,
   setDoc,
-  updateDoc
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "./firebase/firebase.js";
 import expressPinoLogger from "express-pino-logger";
@@ -163,6 +163,33 @@ app.get("/viewBrands", async (req, res) => {
   }
 });
 
+app.post("/viewPerfumes", async (req, res) => {
+  try{
+    const brandId = req.body.id;
+
+    if (!brandId) {
+      return res.status(400).send({ message: "Invalid brandId" });
+    }
+
+    const perfumesCollection = collection(db, "brands", brandId, "perfumes");
+    const perfumesSnapshot = await getDocs(perfumesCollection);
+
+    const perfumes = perfumesSnapshot.docs.map((perfumeDoc) => {
+      const perfumeData = perfumeDoc.data();
+      return {
+        ...perfumeData,
+        id: perfumeDoc.id, // Adaugă id-ul unic generat de Firebase pentru parfum
+      };
+    });
+
+    res.status(200).send(perfumes);
+
+  }catch (error) {
+    console.error(`Error fetching perfumes for brand ${brandId}: `, error);
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+});
+
 app.post("/deletePerfume", async (req, res) => {
   console.log(req.body);
   console.log("sunt aici");
@@ -255,7 +282,7 @@ app.post("/editBrand", async (req, res) => {
 
   try {
     const brandsCollection = collection(db, "brands");
-    const brandDocRef = doc(brandsCollection, id); 
+    const brandDocRef = doc(brandsCollection, id);
 
     await updateDoc(brandDocRef, {
       name: name,
@@ -320,5 +347,5 @@ app.post("/deleteBrand", async (req, res) => {
 });
 
 app.listen(port, () => {
-  logger.info(`Serverul rulează la adresa http://localhost:${port}`);
+  logger.info(`Serverul ruleaza la adresa http://localhost:${port}`);
 });
