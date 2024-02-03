@@ -1,15 +1,16 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-
+    <img alt="Welcome" src="../assets/home.png" class="small-image" />
     <div v-if="isLoggedIn">
       <h1>Welcome, {{ getUsername() }}!</h1>
     </div>
     <div v-else>
       <h1>Welcome!</h1>
-      <!-- Aici poți adăuga altceva pentru utilizatorii neautentificați -->
+      <h3>
+        `Perfumery is a symphony, it has a beginning, middle and an end.` –
+        Isabelle Ramsay-Brackstone
+      </h3>
     </div>
-    <br />
   </div>
 </template>
 
@@ -69,3 +70,26 @@ export default {
   },
 };
 </script>
+
+<style>
+body {
+  margin: 0;
+  background: linear-gradient(
+    rgba(135, 125, 250, 0.9),
+    rgba(180, 174, 232, 0.7)
+  );
+}
+
+.small-image {
+  width: 300px;
+  height: auto;
+}
+
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: space-around; */
+  height: calc(100vh - 2rem);
+}
+</style>
