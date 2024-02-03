@@ -14,7 +14,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(perfume, index) in displayedPerfumes" :key="index">
+          <tr
+            v-for="(perfume, index) in displayedPerfumes"
+            :key="index"
+            @click="editPerfume(perfume)"
+          >
             <td>{{ perfume.name }}</td>
             <td>{{ formatIngredients(perfume.ingredients) }}</td>
             <td>{{ perfume.price }} $</td>
@@ -46,8 +50,9 @@
         Add Perfume
       </button>
     </div>
-    <div class="main" v-if="showForm" @submit.prevent="addPerfume">
+    <div class="main" v-if="showForm" @submit.prevent="handleSubmit">
       <form>
+        <h1>{{ editMode ? "Edit" : "Add" }} a Perfume</h1>
         <input
           type="text"
           placeholder="Name"
@@ -73,7 +78,7 @@
           class="input-field"
           v-model="gender"
         />
-        <button class="btn1">Add</button>
+        <button class="btn1">{{ editMode ? "Save" : "Add" }}</button>
         <p>{{ message }}</p>
       </form>
     </div>
@@ -103,6 +108,8 @@ export default {
     const ingredients = ref("");
     const gender = ref("");
     const message = ref("");
+    const selectedPerfume = ref(null);
+    const editMode = ref(false);
 
     onMounted(async () => {
       brandId.value = store.state.brandId;
@@ -112,6 +119,20 @@ export default {
       await getCurrentPerfumes(brandId.value);
       updateDisplayedPerfumes();
     });
+
+    const editPerfume = (perfume) => {
+      // Setează parfumul curent ca "selectedPerfume" pentru editare
+      selectedPerfume.value = { ...perfume };
+      editMode.value = !editMode.value;
+      toggleForm();
+
+      selectedPerfume.value = perfume;
+
+      name.value = perfume.name;
+      ingredients.value = perfume.ingredients;
+      price.value = perfume.price;
+      gender.value = perfume.gender;
+    };
 
     const getCurrentPerfumes = async (brandId) => {
       let localRequestOptions = { ...requestOptions };
@@ -162,6 +183,11 @@ export default {
 
     const toggleForm = () => {
       showForm.value = !showForm.value;
+
+      name.value = "";
+      ingredients.value = "";
+      price.value = "";
+      gender.value = "";
     };
 
     const addPerfume = () => {
@@ -179,6 +205,8 @@ export default {
         gender.value === ""
       ) {
         message.value = "Perfume informations cannot be null.";
+      } else if (!["uni", "woman", "man"].includes(gender.value)) {
+        message.value = "Invalid gender. Please use 'uni', 'woman', or 'man'.";
       } else {
         let localRequestOptions = { ...requestOptions };
         localRequestOptions.method = "POST";
@@ -221,6 +249,74 @@ export default {
       }
     };
 
+    const editPerfumeInBD = () => {
+      console.log("brandId: " + brandId.value);
+      console.log("vreau sa editez un parfum cu numele: " + name.value);
+      console.log("ingrediente: " + ingredients.value);
+      console.log("price: " + price.value);
+      console.log("gender: " + gender.value);
+
+      if (
+        brandId.value === "" ||
+        name.value === "" ||
+        ingredients.value === "" ||
+        price.value === "" ||
+        gender.value === ""
+      ) {
+        message.value = "Perfume informations cannot be null.";
+      } else if (!["uni", "woman", "man"].includes(gender.value)) {
+        message.value = "Invalid gender. Please use 'uni', 'woman', or 'man'.";
+      } else {
+        let localRequestOptions = { ...requestOptions };
+        localRequestOptions.method = "POST";
+
+        let postData = {
+          name: name.value,
+          ingredients: ingredients.value
+            .split(", ")
+            .map((ingredient) => ingredient.trim()),
+          price: price.value,
+          brandId: brandId.value,
+          gender: gender.value,
+          rating: 0,
+          perfumeId: selectedPerfume.value.id,
+        };
+
+        console.log(postData);
+
+        localRequestOptions.body = JSON.stringify(postData);
+
+        fetch(base_url + "editAPerfume", localRequestOptions)
+          .then(async (res) => {
+            if (res.status === 200) {
+              res.json().then((res) => {
+                console.log(res);
+                message.value = "Perfume edited successfully.";
+                getCurrentPerfumes(brandId.value);
+                name.value = "";
+                ingredients.value = "";
+                price.value = "";
+                gender.value = "";
+                console.log(perfumes);
+              });
+            } else {
+              message.value = "An error occurred while adding the perfume";
+            }
+          })
+          .catch((error) => {
+            console.error("Error during brand addition:", error);
+          });
+      }
+    };
+
+    const handleSubmit = () => {
+      if (editMode.value === false) {
+        addPerfume();
+      } else {
+        editPerfumeInBD();
+      }
+    };
+
     return {
       brandId,
       brandName,
@@ -239,6 +335,11 @@ export default {
       price,
       gender,
       message,
+      editPerfume,
+      selectedPerfume,
+      editMode,
+      handleSubmit,
+      editPerfumeInBD,
     };
   },
 };

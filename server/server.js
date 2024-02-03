@@ -164,7 +164,7 @@ app.get("/viewBrands", async (req, res) => {
 });
 
 app.post("/viewPerfumes", async (req, res) => {
-  let brandId;  // Declară brandId aici
+  let brandId; // Declară brandId aici
 
   try {
     brandId = req.body.id;
@@ -190,7 +190,6 @@ app.post("/viewPerfumes", async (req, res) => {
     res.status(500).send({ message: "Internal Server Error" });
   }
 });
-
 
 app.post("/deletePerfume", async (req, res) => {
   console.log(req.body);
@@ -256,10 +255,9 @@ app.post("/addAPerfume", async (req, res) => {
   const brandId = req.body.brandId;
   const name = req.body.name;
   const ingredients = req.body.ingredients;
-  const price = req.body.price;
   const gender = req.body.gender;
-  const rating = req.body.rating;
-
+  const price = parseFloat(req.body.price);
+  const rating = parseInt(req.body.rating);
   const brandsCollection = collection(db, "brands");
 
   try {
@@ -340,6 +338,42 @@ app.post("/editBrand", async (req, res) => {
     res.status(500).json({
       message: "Error editing brand",
     });
+  }
+});
+
+app.post("/editAPerfume", async (req, res) => {
+  console.log(req.body);
+
+  const brandId = req.body.brandId;
+  const name = req.body.name;
+  const perfumeId = req.body.perfumeId;
+  const ingredients = req.body.ingredients;
+  const gender = req.body.gender;
+  const price = parseFloat(req.body.price);
+  const brandsCollection = collection(db, "brands");
+
+  try {
+    const brandRef = doc(collection(db, "brands"), brandId);
+    const perfumesRef = collection(brandRef, "perfumes");
+    const perfumeDocRef = doc(perfumesRef, perfumeId);
+
+    const perfumeDoc = await getDoc(perfumeDocRef);
+
+    if (!perfumeDoc.exists()) {
+      return res.status(404).json({ message: "Perfume not found." });
+    }
+
+    await updateDoc(perfumeDocRef, {
+      name: name,
+      ingredients: ingredients,
+      gender: gender,
+      price: price,
+    });
+
+    res.status(200).json({ message: "Perfume updated successfully." });
+  } catch (error) {
+    console.error("Error editing perfume:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
