@@ -46,15 +46,37 @@
         Add Perfume
       </button>
     </div>
-    <form v-if="showForm" @submit.prevent="addPerfume">
-      <input
-        type="text"
-        placeholder="Name"
-        class="input-field"
-        v-model="name"
-      />
-      <button class="btn1">Add</button>
-    </form>
+    <div class="main" v-if="showForm" @submit.prevent="addPerfume">
+      <form>
+        <input
+          type="text"
+          placeholder="Name"
+          class="input-field"
+          v-model="name"
+        />
+        <input
+          type="text"
+          placeholder="Ingredients: ingredient1, ingredient2, ..."
+          class="input-field"
+          v-model="ingredients"
+        />
+
+        <input
+          type="text"
+          placeholder="Price"
+          class="input-field"
+          v-model="price"
+        />
+        <input
+          type="text"
+          placeholder="Gender: uni/man/woman"
+          class="input-field"
+          v-model="gender"
+        />
+        <button class="btn1">Add</button>
+        <p>{{ message }}</p>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -77,6 +99,10 @@ export default {
     const currentPage = ref(1);
     const showForm = ref(false);
     const name = ref("");
+    const price = ref("");
+    const ingredients = ref("");
+    const gender = ref("");
+    const message = ref("");
 
     onMounted(async () => {
       brandId.value = store.state.brandId;
@@ -138,7 +164,59 @@ export default {
     };
 
     const addPerfume = () => {
-      console.log("vreau sa adaug un parfum cu numele" + name.value);
+      console.log("brandId: " + brandId.value);
+      console.log("vreau sa adaug un parfum cu numele: " + name.value);
+      console.log("ingrediente: " + ingredients.value);
+      console.log("price: " + price.value);
+      console.log("gender: " + gender.value);
+
+      if (
+        brandId.value === "" ||
+        name.value === "" ||
+        ingredients.value === "" ||
+        price.value === "" ||
+        gender.value === ""
+      ) {
+        message.value = "Perfume informations cannot be null.";
+      } else {
+        let localRequestOptions = { ...requestOptions };
+        localRequestOptions.method = "POST";
+
+        let postData = {
+          name: name.value,
+          ingredients: ingredients.value
+            .split(", ")
+            .map((ingredient) => ingredient.trim()),
+          price: price.value,
+          brandId: brandId.value,
+          gender: gender.value,
+          rating: 0,
+        };
+
+        console.log(postData);
+
+        localRequestOptions.body = JSON.stringify(postData);
+
+        fetch(base_url + "addAPerfume", localRequestOptions)
+          .then(async (res) => {
+            if (res.status === 200) {
+              res.json().then((res) => {
+                console.log(res);
+                message.value = "Perfume added successfully.";
+                name.value = "";
+                ingredients.value = "";
+                price.value = "";
+                gender.value = "";
+                getCurrentPerfumes(brandId.value);
+              });
+            } else {
+              message.value = "An error occurred while adding the perfume";
+            }
+          })
+          .catch((error) => {
+            console.error("Error during brand addition:", error);
+          });
+      }
     };
 
     return {
@@ -154,7 +232,11 @@ export default {
       showForm,
       toggleForm,
       addPerfume,
-      name
+      name,
+      ingredients,
+      price,
+      gender,
+      message,
     };
   },
 };

@@ -164,8 +164,10 @@ app.get("/viewBrands", async (req, res) => {
 });
 
 app.post("/viewPerfumes", async (req, res) => {
-  try{
-    const brandId = req.body.id;
+  let brandId;  // Declară brandId aici
+
+  try {
+    brandId = req.body.id;
 
     if (!brandId) {
       return res.status(400).send({ message: "Invalid brandId" });
@@ -178,17 +180,17 @@ app.post("/viewPerfumes", async (req, res) => {
       const perfumeData = perfumeDoc.data();
       return {
         ...perfumeData,
-        id: perfumeDoc.id, // Adaugă id-ul unic generat de Firebase pentru parfum
+        id: perfumeDoc.id,
       };
     });
 
     res.status(200).send(perfumes);
-
-  }catch (error) {
+  } catch (error) {
     console.error(`Error fetching perfumes for brand ${brandId}: `, error);
     res.status(500).send({ message: "Internal Server Error" });
   }
 });
+
 
 app.post("/deletePerfume", async (req, res) => {
   console.log(req.body);
@@ -245,6 +247,47 @@ app.post("/deletePerfume", async (req, res) => {
     res
       .status(500)
       .json({ message: "A apărut o eroare în timpul ștergerii parfumului." });
+  }
+});
+
+app.post("/addAPerfume", async (req, res) => {
+  console.log(req.body);
+
+  const brandId = req.body.brandId;
+  const name = req.body.name;
+  const ingredients = req.body.ingredients;
+  const price = req.body.price;
+  const gender = req.body.gender;
+  const rating = req.body.rating;
+
+  const brandsCollection = collection(db, "brands");
+
+  try {
+    const brandDocRef = doc(brandsCollection, brandId);
+    const brandDoc = await getDoc(brandDocRef);
+
+    if (!brandDoc.exists()) {
+      return res
+        .status(404)
+        .json({ message: "Brandul cu ID-ul specificat nu există." });
+    }
+
+    const perfumesCollection = collection(brandDocRef, "perfumes");
+
+    const newPerfumeDocRef = await addDoc(perfumesCollection, {
+      name,
+      ingredients,
+      price,
+      gender,
+      rating,
+    });
+    console.log("Parfum adăugat cu succes:", newPerfumeDocRef.id);
+    res.status(200).json({ message: "Parfum adăugat cu succes." });
+  } catch (error) {
+    console.error("Eroare în timpul adăugării parfumului:", error);
+    res
+      .status(500)
+      .json({ message: "A apărut o eroare în timpul adăugării parfumului." });
   }
 });
 
