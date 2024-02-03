@@ -222,7 +222,6 @@ export default {
       message.value = "";
     }
 
-    // Initial loading of brands
     getCurrentBrands();
 
     return {

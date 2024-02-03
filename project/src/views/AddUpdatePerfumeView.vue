@@ -128,6 +128,7 @@ export default {
         if (res.status === 200) {
           const data = await res.json();
           perfumes.value = data;
+          updateDisplayedPerfumes();
           console.log("Received perfumes:", perfumes.value);
         } else {
           console.log("A apărut o eroare");
@@ -203,11 +204,12 @@ export default {
               res.json().then((res) => {
                 console.log(res);
                 message.value = "Perfume added successfully.";
+                getCurrentPerfumes(brandId.value);
                 name.value = "";
                 ingredients.value = "";
                 price.value = "";
                 gender.value = "";
-                getCurrentPerfumes(brandId.value);
+                console.log(perfumes);
               });
             } else {
               message.value = "An error occurred while adding the perfume";
