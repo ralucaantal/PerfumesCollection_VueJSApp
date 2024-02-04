@@ -2,6 +2,11 @@
   <div class="homeBrands">
     <div class="brands-list">
       <h1>Brands:</h1>
+      <div class="sort-buttons">
+        <button @click="toggleSortOrder('name')">Sort A-Z/Z-A</button>
+        <!-- <button @click="sortByPrice">Sort by Price</button>
+        <button @click="sortByRating">Sort by Rating</button> -->
+      </div>
       <button v-if="isLoggedIn" @click="addBrand">Add/Update Brand</button>
       <div v-for="i in brands" :key="i" class="brands-container">
         <Brands :brands="i" @updateBrands="handleUpdateBrands" />
@@ -24,12 +29,50 @@ export default {
   data() {
     return {
       brands: [],
+      sortOrders: {
+        name: 1, // 1 pentru A-Z, -1 pentru Z-A
+        price: 1,
+        rating: 1,
+      },
     };
   },
   computed: {
     ...mapGetters(["isLoggedIn"]),
   },
   methods: {
+    toggleSortOrder(key) {
+      this.sortOrders[key] *= -1;
+      this.sortBrands(key);
+    },
+
+    // sortByPrice() {
+    //   console.log("Sorting by price");
+    //   this.sortBrands("price");
+    // },
+
+    // sortByRating() {
+    //   console.log("Sorting by rating");
+    //   this.sortBrands("rating");
+    // },
+
+    sortBrands(key) {
+      this.brands.sort((a, b) => {
+        const order = this.sortOrders[key];
+        if (key === "name") {
+          return order * a[key].localeCompare(b[key]);
+        } else {
+          // Directly compare numbers for price and rating
+          return order * (a[key] - b[key]);
+        }
+      });
+
+      console.log("Sorted brands:", this.brands); // Adaugă această linie
+    },
+
+    sortAlphabetically() {
+      this.sortBrands("name");
+    },
+
     handleUpdateBrands(message) {
       console.log("ViewBrandsView.vue handleUpdateBrands: " + message);
       this.getCurrentBrands();
@@ -63,5 +106,11 @@ export default {
 .homeBrans {
   display: flex;
   justify-content: space-around;
+}
+
+.sort-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
 }
 </style>

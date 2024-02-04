@@ -51,15 +51,13 @@ function verifyToken(req, res, next) {
         }
       } else {
         console.log(decoded.data);
-        req.email = decoded.data;
+        req.username = decoded.data;
         next();
       }
     });
-    next();
   } else {
-    res.status(401);
+    res.status(401).send("Unauthorized");
   }
-  //console.log('ar trebui sa ai un token', req.headers['authorization'])
 }
 
 app.post("/register", async (req, res) => {
@@ -219,7 +217,7 @@ app.post("/viewPerfumes", async (req, res) => {
   }
 });
 
-app.post("/deletePerfume", async (req, res) => {
+app.post("/deletePerfume", verifyToken, async (req, res) => {
   console.log(req.body);
   console.log("sunt aici");
   const brandId = req.body.brandId;
@@ -277,7 +275,7 @@ app.post("/deletePerfume", async (req, res) => {
   }
 });
 
-app.post("/addAPerfume", async (req, res) => {
+app.post("/addAPerfume", verifyToken, async (req, res) => {
   console.log(req.body);
 
   const brandId = req.body.brandId;
@@ -317,7 +315,7 @@ app.post("/addAPerfume", async (req, res) => {
   }
 });
 
-app.post("/addABrand", async (req, res) => {
+app.post("/addABrand", verifyToken, async (req, res) => {
   console.log(req.body);
   const name = req.body.name;
   const startDate = req.body.startDate;
@@ -342,7 +340,7 @@ app.post("/addABrand", async (req, res) => {
   }
 });
 
-app.post("/editBrand", async (req, res) => {
+app.post("/editBrand", verifyToken, async (req, res) => {
   console.log(req.body);
   const id = req.body.id;
   const name = req.body.name;
@@ -369,12 +367,22 @@ app.post("/editBrand", async (req, res) => {
   }
 });
 
-app.post("/rateAPerfume", async (req, res) => {
+app.post("/rateAPerfume", verifyToken, async (req, res) => {
   console.log(req.body);
 
   const brandId = req.body.brandId;
   const perfumeId = req.body.perfumeId;
   const rating = req.body.rating;
+
+  if (
+    !brandId ||
+    !perfumeId ||
+    rating === undefined ||
+    rating < 0 ||
+    rating > 5
+  ) {
+    return res.status(400).json({ message: "Invalid input data." });
+  }
 
   const brandsCollection = collection(db, "brands");
 
@@ -389,18 +397,16 @@ app.post("/rateAPerfume", async (req, res) => {
       return res.status(404).json({ message: "Perfume not found." });
     }
 
-    await updateDoc(perfumeDocRef, {
-      rating: rating,
-    });
+    await updateDoc(perfumeDocRef, { rating: rating });
 
-    res.status(200).json({ message: "Perfume updated successfully." });
+    res.status(200).json({ message: "Perfume rating updated successfully." });
   } catch (error) {
-    console.error("Error editing perfume:", error);
+    console.error("Error updating perfume rating:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
-app.post("/editAPerfume", async (req, res) => {
+app.post("/editAPerfume", verifyToken, async (req, res) => {
   console.log(req.body);
 
   const brandId = req.body.brandId;

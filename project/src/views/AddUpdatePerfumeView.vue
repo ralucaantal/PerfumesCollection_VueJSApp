@@ -123,7 +123,6 @@ export default {
     const editPerfume = (perfume) => {
       // Setează parfumul curent ca "selectedPerfume" pentru editare
       selectedPerfume.value = { ...perfume };
-      editMode.value = !editMode.value;
       toggleForm();
 
       selectedPerfume.value = perfume;
@@ -132,6 +131,8 @@ export default {
       ingredients.value = perfume.ingredients;
       price.value = perfume.price;
       gender.value = perfume.gender;
+
+      editMode.value = !editMode.value;
     };
 
     const getCurrentPerfumes = async (brandId) => {
@@ -272,9 +273,11 @@ export default {
 
         let postData = {
           name: name.value,
-          ingredients: ingredients.value
-            .split(", ")
-            .map((ingredient) => ingredient.trim()),
+          ingredients: Array.isArray(ingredients.value)
+            ? ingredients.value // If already an array, use as is
+            : ingredients.value
+                .split(", ")
+                .map((ingredient) => ingredient.trim()),
           price: price.value,
           brandId: brandId.value,
           gender: gender.value,
