@@ -1,7 +1,8 @@
 <template>
   <div class="brand-container">
-    <h2>🫶🏻 {{ brands.name }}</h2>
     <div>
+      <h2>🫶🏻 {{ brands.name }}</h2>
+
       <button
         class="delete-btn"
         v-if="isLoggedIn"
@@ -17,14 +18,16 @@
         Toggle Perfumes
       </button>
     </div>
-    <div v-if="brands.perfumes && brands.perfumes.length > 0">
-      <p>Average Price: {{ averagePrice(brands.perfumes) }} 💰</p>
-      <p>Average Rating: {{ averageRating(brands.perfumes) }} ⭐</p>
+    <div class="brand-informations">
+      <div v-if="brands.perfumes && brands.perfumes.length > 0">
+        <p>Average Price: {{ averagePrice(brands.perfumes) }} 💰</p>
+        <p>Average Rating: {{ averageRating(brands.perfumes) }} ⭐</p>
+      </div>
+      <p v-if="brands.perfumes">
+        Founded on {{ brands.startDate }} in {{ brands.country }} and offering
+        {{ brands.perfumes.length }} perfumes.
+      </p>
     </div>
-    <p v-if="brands.perfumes">
-      Founded on {{ brands.startDate }} in {{ brands.country }} and offering
-      {{ brands.perfumes.length }} perfumes.
-    </p>
     <button
       class="add-update"
       v-if="isLoggedIn"
@@ -253,6 +256,13 @@ a {
   margin-left: 25px;
   margin-right: 25px;
   background-color: #eeeaf0;
+}
+
+.brand-informations {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .btn_toggle {

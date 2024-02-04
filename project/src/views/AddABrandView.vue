@@ -1,12 +1,16 @@
 <template>
   <div class="homeBrands">
     <div class="mainBrands">
-      <BrandsTable
-        :brands="brands"
-        class="brands-table"
-        @rowClick="editABrand"
-      />
-      <button v-if="isLoggedIn" @click="toggleForm">Add Brand</button>
+      <div class="table-container">
+        <BrandsTable
+          :brands="brands"
+          class="brands-table"
+          @rowClick="editABrand"
+        />
+        <button class="add-update" v-if="isLoggedIn" @click="toggleForm">
+          Add Brand
+        </button>
+      </div>
       <form v-show="showForm" @submit.prevent="handleSubmit">
         <h1>{{ editMode ? "Edit" : "Add" }} a Brand</h1>
         <input
@@ -244,9 +248,14 @@ export default {
 </script>
 
 <style>
+.homeBrands {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
 .mainBrands {
   display: flex;
-  align-items: center;
-  justify-content: space-around;
+  flex-direction: row;
 }
 </style>

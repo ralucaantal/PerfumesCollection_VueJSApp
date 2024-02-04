@@ -20,7 +20,9 @@
             @click="editPerfume(perfume)"
           >
             <td>{{ perfume.name }}</td>
-            <td>{{ formatIngredients(perfume.ingredients) }}</td>
+            <td class="ingredients">
+              {{ formatIngredients(perfume.ingredients) }}
+            </td>
             <td>{{ perfume.price }} $</td>
             <td>{{ perfume.gender }}</td>
             <td>{{ perfume.rating }}</td>
@@ -123,16 +125,17 @@ export default {
     const editPerfume = (perfume) => {
       // Setează parfumul curent ca "selectedPerfume" pentru editare
       selectedPerfume.value = { ...perfume };
-      toggleForm();
-
       selectedPerfume.value = perfume;
 
       name.value = perfume.name;
-      ingredients.value = perfume.ingredients;
+      ingredients.value = perfume.ingredients.join(", ");
       price.value = perfume.price;
       gender.value = perfume.gender;
 
       editMode.value = !editMode.value;
+
+      // Toggle form after setting values
+      toggleForm();
     };
 
     const getCurrentPerfumes = async (brandId) => {
@@ -347,3 +350,26 @@ export default {
   },
 };
 </script>
+
+<style>
+table {
+  margin-left: 30px;
+  margin-right: 30px;
+  width: auto;
+}
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+td.ingredients {
+  max-width: 180px; /* Adjust the max-width as per your design */
+  word-wrap: break-word;
+}
+</style>

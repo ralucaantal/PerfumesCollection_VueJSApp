@@ -111,6 +111,7 @@ form {
   box-sizing: border-box;
   margin-left: 25px;
   margin-right: 25px;
+  margin-top: 20px;
 }
 
 h1 {
