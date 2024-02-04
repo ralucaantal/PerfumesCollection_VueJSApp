@@ -219,7 +219,7 @@ export default {
           price: price.value,
           brandId: brandId.value,
           gender: gender.value,
-          rating: 0,
+          rating: 5,
         };
 
         console.log(postData);

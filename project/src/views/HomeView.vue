@@ -3,6 +3,10 @@
     <img alt="Welcome" src="../assets/home.png" class="small-image" />
     <div v-if="isLoggedIn">
       <h1>Welcome, {{ getUsername() }}!</h1>
+      <h3>
+        `Perfumery is a symphony, it has a beginning, middle and an end.` –
+        Isabelle Ramsay-Brackstone
+      </h3>
     </div>
     <div v-else>
       <h1>Welcome!</h1>
@@ -74,10 +78,6 @@ export default {
 <style>
 body {
   margin: 0;
-  background: linear-gradient(
-    rgba(135, 125, 250, 0.9),
-    rgba(180, 174, 232, 0.7)
-  );
 }
 
 .small-image {

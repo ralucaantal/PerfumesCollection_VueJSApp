@@ -34,6 +34,34 @@ app.get("/", (req, res) => {
   res.send("Bun venit pe serverul Express!");
 });
 
+//middleware
+function verifyToken(req, res, next) {
+  let token = req.headers["authorization"];
+  if (token) {
+    jwt.verify(token, serverSecret, (err, decoded) => {
+      if (err) {
+        if (err.expiredAt) {
+          console.log("Tokenul tau a expirat");
+          res.status(403);
+          res.send("expiredToken");
+        } else {
+          console.log("Tokenul tau nu este bun");
+          res.status(403);
+          res.send("brokenToken");
+        }
+      } else {
+        console.log(decoded.data);
+        req.email = decoded.data;
+        next();
+      }
+    });
+    next();
+  } else {
+    res.status(401);
+  }
+  //console.log('ar trebui sa ai un token', req.headers['authorization'])
+}
+
 app.post("/register", async (req, res) => {
   console.log("vrei sa faci POST cu ", req.body);
 
@@ -338,6 +366,37 @@ app.post("/editBrand", async (req, res) => {
     res.status(500).json({
       message: "Error editing brand",
     });
+  }
+});
+
+app.post("/rateAPerfume", async (req, res) => {
+  console.log(req.body);
+
+  const brandId = req.body.brandId;
+  const perfumeId = req.body.perfumeId;
+  const rating = req.body.rating;
+
+  const brandsCollection = collection(db, "brands");
+
+  try {
+    const brandRef = doc(collection(db, "brands"), brandId);
+    const perfumesRef = collection(brandRef, "perfumes");
+    const perfumeDocRef = doc(perfumesRef, perfumeId);
+
+    const perfumeDoc = await getDoc(perfumeDocRef);
+
+    if (!perfumeDoc.exists()) {
+      return res.status(404).json({ message: "Perfume not found." });
+    }
+
+    await updateDoc(perfumeDocRef, {
+      rating: rating,
+    });
+
+    res.status(200).json({ message: "Perfume updated successfully." });
+  } catch (error) {
+    console.error("Error editing perfume:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 

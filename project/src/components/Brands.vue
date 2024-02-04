@@ -29,6 +29,20 @@
         <p>Rating: {{ perfume.rating }} ⭐</p>
 
         <div v-if="isLoggedIn">
+          <p>
+            Rating:
+            <span v-for="star in 5" :key="star">
+              <span
+                @click="setRating(perfume.id, perfume.rating, brands.id, star)"
+                :class="{ rated: star <= perfume.rating }"
+              >
+                ⭐
+              </span>
+            </span>
+          </p>
+        </div>
+
+        <div v-if="isLoggedIn">
           <button @click="deletePerfume(perfume.id, brands.id)">
             Delete Perfume
           </button>
@@ -68,11 +82,43 @@ export default {
     },
   },
   methods: {
-   // ...mapActions('dataTransfer', ['transferData']),
+    setRating(perfumeId, currentRating, brandId, rating) {
+      let newRating = (currentRating + rating) / 2;
+
+      let localRequestOptions = { ...requestOptions };
+      localRequestOptions.method = "POST";
+
+      let postData = {
+        perfumeId: perfumeId,
+        brandId: brandId,
+        rating: newRating,
+      };
+
+      console.log(postData);
+
+      localRequestOptions.body = JSON.stringify(postData);
+
+      fetch(base_url + "rateAPerfume", localRequestOptions)
+        .then(async (res) => {
+          if (res.status === 200) {
+            res.json().then((res) => {
+              console.log(res);
+              this.$emit("updateBrands", res.message);
+            });
+          } else {
+            console.log("An error occurred while adding the perfume");
+          }
+        })
+        .catch((error) => {
+          console.error("Error during brand addition:", error);
+        });
+    },
+
     addUpdatePerfume(brandId, brandName) {
-     // const store = useStore();
-      console.log("vreau sa adaug un parfum la brandul cu id:" + brandId + " "+  brandName);
-      router.replace("/addUpdatePerfume")
+      console.log(
+        "vreau sa adaug un parfum la brandul cu id:" + brandId + " " + brandName
+      );
+      router.replace("/addUpdatePerfume");
       this.$store.dispatch("transferData", { brandId, brandName });
       // router.push({
       //   name: "addUpdatePerfume",
