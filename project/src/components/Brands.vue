@@ -1,11 +1,19 @@
 <template>
-  <div class="brands">
+  <div class="brand-container">
     <h2>🫶🏻 {{ brands.name }}</h2>
     <div>
-      <button v-if="isLoggedIn" @click="deleteBrand(brands.id)">
+      <button
+        class="delete-btn"
+        v-if="isLoggedIn"
+        @click="deleteBrand(brands.id)"
+      >
         Delete Brand
       </button>
-      <button @click="togglePerfumesVisibility(brands.id)" v-if="brands.id">
+      <button
+        class="btn_toggle"
+        @click="togglePerfumesVisibility(brands.id)"
+        v-if="brands.id"
+      >
         Toggle Perfumes
       </button>
     </div>
@@ -17,7 +25,11 @@
       Founded on {{ brands.startDate }} in {{ brands.country }} and offering
       {{ brands.perfumes.length }} perfumes.
     </p>
-    <button v-if="isLoggedIn" @click="addUpdatePerfume(brands.id, brands.name)">
+    <button
+      class="add-update"
+      v-if="isLoggedIn"
+      @click="addUpdatePerfume(brands.id, brands.name)"
+    >
       Add/Update A Perfume
     </button>
     <template v-if="showPerfumes && brands.id === selectedBrandId">
@@ -30,7 +42,7 @@
 
         <div v-if="isLoggedIn">
           <p>
-            Rating:
+            Rate:
             <span v-for="star in 5" :key="star">
               <span
                 @click="setRating(perfume.id, perfume.rating, brands.id, star)"
@@ -43,7 +55,10 @@
         </div>
 
         <div v-if="isLoggedIn">
-          <button @click="deletePerfume(perfume.id, brands.id)">
+          <button
+            class="delete-btn"
+            @click="deletePerfume(perfume.id, brands.id)"
+          >
             Delete Perfume
           </button>
           <!-- <button @click="updatePerfume(perfume.id, brands.id)">
@@ -227,5 +242,34 @@ li {
 }
 a {
   color: #42b983;
+}
+
+.brand-container {
+  border: 2px solid #887d92;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  margin-left: 25px;
+  margin-right: 25px;
+  background-color: #eeeaf0;
+}
+
+.btn_toggle {
+  background-color: #4f3b78;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.delete-btn {
+  background-color: #774181;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
 }
 </style>

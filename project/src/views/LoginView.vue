@@ -70,8 +70,7 @@ export default {
               router.replace("/");
               store.dispatch("login");
             } else {
-              message.value =
-                "Authentication failed. Check the entered data.";
+              message.value = "Authentication failed. Check the entered data.";
             }
           });
       } else {
@@ -106,6 +105,12 @@ export default {
 form {
   max-width: 400px;
   width: 100%;
+  border: 2px solid #4f3b78;
+  border-radius: 8px;
+  padding: 20px;
+  box-sizing: border-box;
+  margin-left: 25px;
+  margin-right: 25px;
 }
 
 h1 {
@@ -117,6 +122,8 @@ h1 {
   padding: 0.5rem;
   margin: 0.75rem 0;
   box-sizing: border-box;
+  border: 2px solid #4f3b78;
+  border-radius: 5px;
 }
 
 .login-btn {

@@ -3,13 +3,11 @@
     <img alt="Welcome" src="../assets/home.png" class="small-image" />
     <div v-if="isLoggedIn">
       <h1>Welcome, {{ getUsername() }}!</h1>
-      <h3>
-        `Perfumery is a symphony, it has a beginning, middle and an end.` –
-        Isabelle Ramsay-Brackstone
-      </h3>
     </div>
     <div v-else>
       <h1>Welcome!</h1>
+    </div>
+    <div class="quotation-container">
       <h3>
         `Perfumery is a symphony, it has a beginning, middle and an end.` –
         Isabelle Ramsay-Brackstone
@@ -89,7 +87,21 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* justify-content: space-around; */
   height: calc(100vh - 2rem);
+}
+
+.quotation-container {
+  background-color: #eeecec;
+  border: 2px solid #b4aee8;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+  text-align: center;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+
+.quotation-container h3 {
+  margin: 0;
 }
 </style>

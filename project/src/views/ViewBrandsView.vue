@@ -3,11 +3,13 @@
     <div class="brands-list">
       <h1>Brands:</h1>
       <div class="sort-buttons">
-        <button @click="toggleSortOrder('name')">Sort A-Z/Z-A</button>
+        <button class="btn_sort" @click="toggleSortOrder('name')">
+          Sort A-Z/Z-A
+        </button>
         <!-- <button @click="sortByPrice">Sort by Price</button>
         <button @click="sortByRating">Sort by Rating</button> -->
       </div>
-      <button v-if="isLoggedIn" @click="addBrand">Add/Update Brand</button>
+      <button class="add-update" v-if="isLoggedIn" @click="addBrand">Add/Update Brand</button>
       <div v-for="i in brands" :key="i" class="brands-container">
         <Brands :brands="i" @updateBrands="handleUpdateBrands" />
       </div>
@@ -112,5 +114,23 @@ export default {
   display: flex;
   justify-content: space-around;
   margin-bottom: 10px;
+}
+
+.btn_sort {
+  background-color: #927fbf;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.add-update{
+  background-color: #FBBF24;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
 }
 </style>
