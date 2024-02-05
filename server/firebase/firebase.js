@@ -2,13 +2,12 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAuO2B6J4V7ySoj6GnPeDu91vSY__z3XD8",
-  authDomain: "project-tic-3844b.firebaseapp.com",
-  projectId: "project-tic-3844b",
-  storageBucket: "project-tic-3844b.appspot.com",
-  messagingSenderId: "121715110958",
-  appId: "1:121715110958:web:2aa8ac64758c4c67eddbbf",
-  measurementId: "G-QS27XYJXYE",
+  apiKey: "AIzaSyC14nSLmpzwLfpD4sQBKcizCM6k8w9JWPE",
+  authDomain: "project-tic-8676f.firebaseapp.com",
+  projectId: "project-tic-8676f",
+  storageBucket: "project-tic-8676f.appspot.com",
+  messagingSenderId: "792449229151",
+  appId: "1:792449229151:web:bafdabddeba3c67d3a56ea"
 };
 
 const app = initializeApp(firebaseConfig);

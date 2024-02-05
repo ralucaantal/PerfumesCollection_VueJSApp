@@ -282,7 +282,7 @@ a {
 }
 
 .delete-btn {
-  background-color: #a698ee;
+  background-color: #ffe3b0;
   color: white;
   padding: 0.5rem 1rem;
   border: none;
