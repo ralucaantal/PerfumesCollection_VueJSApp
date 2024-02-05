@@ -6,7 +6,6 @@
 
     <router-link to="/viewBrands">View Brands & Perfumes | </router-link>
 
-    <!-- Utilizează v-if pentru a verifica existența tokenului în localStorage -->
     <button v-if="isLoggedIn" class="logout-button" @click="logout">
       Logout
     </button>
@@ -15,7 +14,7 @@
 </template>
 
 <script>
-//import { onBeforeUnmount } from "vue";
+
 import { ref, watch } from "vue";
 import { useStore } from "vuex";
 import router from "@/router";
@@ -81,8 +80,13 @@ nav {
   cursor: pointer;
 }
 
+.logout-button{
+  background-color: transparent;
+}
+
 .router-link.router-link-exact-active,
 .logout-button:hover {
   color: #a393eb;
+  border-color:transparent ;
 }
 </style>

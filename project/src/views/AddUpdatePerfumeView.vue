@@ -1,56 +1,61 @@
 <template>
-  <div>
-    <h1>Perfumes from brand: {{ brandName }}</h1>
-    <template v-if="perfumes.length > 0">
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Ingredients</th>
-            <th>Price</th>
-            <th>Gender</th>
-            <th>Rating</th>
-            <!-- Alte coloane pot fi adăugate aici, în funcție de necesități -->
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(perfume, index) in displayedPerfumes"
-            :key="index"
-            @click="editPerfume(perfume)"
+  <div class="homeBrands">
+    <div class="mainBrands">
+      <div class="table-container">
+        <h1>Perfumes from brand: {{ brandName }}</h1>
+
+        <template v-if="perfumes.length > 0">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Ingredients</th>
+                <th>Price</th>
+                <th>Gender</th>
+                <th>Rating</th>
+                <!-- Alte coloane pot fi adăugate aici, în funcție de necesități -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(perfume, index) in displayedPerfumes"
+                :key="index"
+                @click="editPerfume(perfume)"
+              >
+                <td>{{ perfume.name }}</td>
+                <td class="ingredients">
+                  {{ formatIngredients(perfume.ingredients) }}
+                </td>
+                <td>{{ perfume.price }} $</td>
+                <td>{{ perfume.gender }}</td>
+                <td>{{ perfume.rating }}</td>
+                <!-- Alte celule pot fi adăugate aici, în funcție de necesități -->
+              </tr>
+            </tbody>
+          </table>
+        </template>
+        <div class="buttons">
+          <button
+            class="next-prev"
+            v-if="perfumes.length > 5 && currentPage > 1"
+            @click="previousPage"
+            :disabled="currentPage === 1"
           >
-            <td>{{ perfume.name }}</td>
-            <td class="ingredients">
-              {{ formatIngredients(perfume.ingredients) }}
-            </td>
-            <td>{{ perfume.price }} $</td>
-            <td>{{ perfume.gender }}</td>
-            <td>{{ perfume.rating }}</td>
-            <!-- Alte celule pot fi adăugate aici, în funcție de necesități -->
-          </tr>
-        </tbody>
-      </table>
-
-      <button
-        v-if="perfumes.length > 5 && currentPage > 1"
-        @click="previousPage"
-        :disabled="currentPage === 1"
-      >
-        Previous
-      </button>
-
-      <button
-        v-if="perfumes.length > 5 && currentPage * 5 < perfumes.length"
-        @click="nextPage"
-        :disabled="currentPage * 5 >= perfumes.length"
-      >
-        Next
-      </button>
-    </template>
-    <div class="login-btn">
-      <button class="btn1" v-if="isLoggedIn" @click="toggleForm">
-        Add Perfume
-      </button>
+            Previous
+          </button>
+          <button
+            class="next-prev"
+            v-if="perfumes.length > 5 && currentPage * 5 < perfumes.length"
+            @click="nextPage"
+            :disabled="currentPage * 5 >= perfumes.length"
+          >
+            Next
+          </button>
+        </div>
+        <button class="add-update" v-if="isLoggedIn" @click="toggleForm">
+          Add Perfume
+        </button>
+      </div>
     </div>
     <div class="main" v-if="showForm" @submit.prevent="handleSubmit">
       <form>
@@ -352,10 +357,18 @@ export default {
 </script>
 
 <style>
+
+.main{
+  margin-top: 30px;
+}
+.buttons {
+  display: flex;
+  justify-content: center;
+}
+
 table {
-  margin-left: 30px;
+  width: 100%;
   margin-right: 30px;
-  width: auto;
 }
 th,
 td {
@@ -371,5 +384,15 @@ th {
 td.ingredients {
   max-width: 180px; /* Adjust the max-width as per your design */
   word-wrap: break-word;
+}
+
+.next-prev {
+  background-color: #b5a6d2;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 20px;
 }
 </style>

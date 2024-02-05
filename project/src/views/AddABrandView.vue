@@ -3,10 +3,28 @@
     <div class="mainBrands">
       <div class="table-container">
         <BrandsTable
-          :brands="brands"
+          :brands="displayedBrands"
           class="brands-table"
           @rowClick="editABrand"
         />
+        <div class="buttons">
+          <button
+            class="next-prev"
+            v-if="brands.length > 5 && currentPage > 1"
+            @click="previousPage"
+            :disabled="currentPage === 1"
+          >
+            Previous
+          </button>
+          <button
+            class="next-prev"
+            v-if="brands.length > 5 && currentPage * 5 < brands.length"
+            @click="nextPage"
+            :disabled="currentPage * 5 >= brands.length"
+          >
+            Next
+          </button>
+        </div>
         <button class="add-update" v-if="isLoggedIn" @click="toggleForm">
           Add Brand
         </button>
@@ -32,7 +50,7 @@
           v-model="country"
         />
 
-        <div class="login-btn">
+        <div class="login-btn1">
           <button class="btn1">{{ editMode ? "Save" : "Add" }}</button>
         </div>
         <p>{{ message }}</p>
@@ -64,7 +82,25 @@ export default {
     const showForm = ref(false);
     const editMode = ref(false);
 
+    const displayedBrands = ref([]);
+    const currentPage = ref(1);
+
     const selectedBrandBD = ref(null);
+
+    const updateDisplayedBrands = () => {
+      const startIndex = (currentPage.value - 1) * 5;
+      displayedBrands.value = brands.value.slice(startIndex, startIndex + 5);
+    };
+
+    const nextPage = () => {
+      currentPage.value++;
+      updateDisplayedBrands();
+    };
+
+    const previousPage = () => {
+      currentPage.value--;
+      updateDisplayedBrands();
+    };
 
     function addABrand() {
       let currentDate = new Date();
@@ -124,6 +160,7 @@ export default {
         })
         .then((data) => {
           brands.value = data;
+          updateDisplayedBrands();
           console.log("Received brands:", brands.value);
         })
         .catch((error) => {
@@ -242,6 +279,11 @@ export default {
       editABrand,
       editMode,
       selectedBrandBD,
+      updateDisplayedBrands,
+      nextPage,
+      previousPage,
+      displayedBrands,
+      currentPage,
     };
   },
 };

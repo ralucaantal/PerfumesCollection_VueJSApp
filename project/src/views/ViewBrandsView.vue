@@ -6,10 +6,16 @@
         <button class="btn_sort" @click="toggleSortOrder('name')">
           Sort A-Z/Z-A
         </button>
-        <!-- <button @click="sortByPrice">Sort by Price</button>
-        <button @click="sortByRating">Sort by Rating</button> -->
+        <!-- <button class="btn_sort" @click="toggleSortOrder('averageprice')">
+          Sort by Price
+        </button>
+        <button class="btn_sort" @click="toggleSortOrder('averagerating')">
+          Sort by Rating
+        </button> -->
       </div>
-      <button class="add-update" v-if="isLoggedIn" @click="addBrand">Add/Update Brand</button>
+      <button class="add-update" v-if="isLoggedIn" @click="addBrand">
+        Add/Update Brand
+      </button>
       <div v-for="i in brands" :key="i" class="brands-container">
         <Brands :brands="i" @updateBrands="handleUpdateBrands" />
       </div>
@@ -32,7 +38,7 @@ export default {
     return {
       brands: [],
       sortOrders: {
-        name: 1, // 1 pentru A-Z, -1 pentru Z-A
+        name: -1,
         price: 1,
         rating: 1,
       },
@@ -42,33 +48,56 @@ export default {
     ...mapGetters(["isLoggedIn"]),
   },
   methods: {
+    averagePrice(perfumes) {
+      const total = perfumes.reduce((sum, perfume) => sum + perfume.price, 0);
+      const average = total / perfumes.length;
+      return parseFloat(average.toFixed(2));
+    },
+
+    averageRating(perfumes) {
+      const total = perfumes.reduce((sum, perfume) => sum + perfume.rating, 0);
+      const average = total / perfumes.length;
+      return parseFloat(average.toFixed(2));
+    },
     toggleSortOrder(key) {
       this.sortOrders[key] *= -1;
       this.sortBrands(key);
     },
 
-    // sortByPrice() {
-    //   console.log("Sorting by price");
-    //   this.sortBrands("price");
-    // },
+    sortByPrice() {
+      console.log("Sorting by price");
+      this.sortBrands("price");
+    },
 
-    // sortByRating() {
-    //   console.log("Sorting by rating");
-    //   this.sortBrands("rating");
-    // },
+    sortByRating() {
+      console.log("Sorting by rating");
+      this.sortBrands("rating");
+    },
 
     sortBrands(key) {
+      console.log("Sort key:", key);
+      console.log("Sort orders:", this.sortOrders);
       this.brands.sort((a, b) => {
         const order = this.sortOrders[key];
+        console.log("Comparing:", a, b);
         if (key === "name") {
           return order * a[key].localeCompare(b[key]);
-        } else {
-          // Directly compare numbers for price and rating
-          return order * (a[key] - b[key]);
+        } else if (key === "averageprice") {
+          console.log("Sorting by average price");
+          return (
+            order *
+            (this.averagePrice(a.perfumes) - this.averagePrice(b.perfumes))
+          );
+        } else if (key === "averagerating") {
+          console.log("Sorting by average rating");
+          return (
+            order *
+            (this.averageRating(a.perfumes) - this.averageRating(b.perfumes))
+          );
         }
       });
 
-      console.log("Sorted brands:", this.brands); // Adaugă această linie
+      console.log("Sorted brands:", this.brands);
     },
 
     sortAlphabetically() {
@@ -125,8 +154,8 @@ export default {
   border-radius: 5px;
 }
 
-.add-update{
-  background-color: #FBBF24;
+.add-update {
+  background-color: #fbbf24;
   color: white;
   padding: 0.5rem 1rem;
   border: none;
