@@ -190,7 +190,7 @@ export default {
 }
 
 .add-update {
-  background-color: #fbbf24;
+  background-color: #4f3b78;
   color: white;
   padding: 0.5rem 1rem;
   border: none;

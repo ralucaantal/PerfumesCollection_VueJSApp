@@ -125,7 +125,6 @@ h1 {
 }
 
 .btn1 {
-  background-color: #4caf50;
   color: white;
   padding: 0.5rem 1rem;
   border: none;
@@ -134,7 +133,7 @@ h1 {
 }
 
 .login-link {
-  color: #2196f3;
+  color: #c4bbf0;
   text-decoration: underline;
   cursor: pointer;
 }

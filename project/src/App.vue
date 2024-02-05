@@ -54,7 +54,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #27296d;
+  color: #363b4e;
 }
 
 nav {
@@ -65,7 +65,7 @@ nav {
     color: #363b4e;
 
     &.router-link-exact-active {
-      color: #a5a5a5;
+      color: #927fbf;
     }
   }
 }

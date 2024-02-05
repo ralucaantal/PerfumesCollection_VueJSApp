@@ -35,8 +35,6 @@ export default createStore({
     },
     logout({ commit }) {
       return new Promise((resolve) => {
-        // Logica de delogare aici
-        // ...
 
         console.log("Delogare. Setează starea isLoggedIn pe false.");
         commit("setLoggedIn", false);
@@ -44,7 +42,7 @@ export default createStore({
         // Verificare starea isLoggedIn după actualizare
         console.log("Stare isLoggedIn:", this.state.isLoggedIn);
 
-        resolve(); // Resolve promisiunea pentru a semnala finalizarea acțiunii
+        resolve();
       });
     },
     transferData({ commit }, { brandId, brandName }) {

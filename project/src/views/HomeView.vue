@@ -92,7 +92,7 @@ body {
 
 .quotation-container {
   background-color: #eeecec;
-  border: 2px solid #b4aee8;
+  border: 2px solid #c4bbf0;
   padding: 15px;
   border-radius: 8px;
   margin-top: 20px;

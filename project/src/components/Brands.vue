@@ -250,7 +250,7 @@ a {
 }
 
 .brand-container {
-  border: 2px solid #887d92;
+  border: 2px solid #cdc2d7;
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -272,7 +272,7 @@ a {
 }
 
 .btn_toggle {
-  background-color: #4f3b78;
+  background-color: #c4bbf0;
   color: white;
   padding: 0.5rem 1rem;
   border: none;
@@ -282,7 +282,7 @@ a {
 }
 
 .delete-btn {
-  background-color: #774181;
+  background-color: #a698ee;
   color: white;
   padding: 0.5rem 1rem;
   border: none;
