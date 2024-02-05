@@ -58,7 +58,7 @@
       </div>
     </div>
     <div class="main" v-if="showForm" @submit.prevent="handleSubmit">
-      <form>
+      <form class="form">
         <h1>{{ editMode ? "Edit" : "Add" }} a Perfume</h1>
         <input
           type="text"
@@ -193,11 +193,18 @@ export default {
     const toggleForm = () => {
       showForm.value = !showForm.value;
 
+      if (!showForm.value) resetForm();
+    };
+
+    function resetForm() {
+      // Reset form fields
       name.value = "";
       ingredients.value = "";
       price.value = "";
       gender.value = "";
-    };
+
+      editMode.value = false;
+    }
 
     const addPerfume = () => {
       console.log("brandId: " + brandId.value);
@@ -304,10 +311,7 @@ export default {
                 console.log(res);
                 message.value = "Perfume edited successfully.";
                 getCurrentPerfumes(brandId.value);
-                name.value = "";
-                ingredients.value = "";
-                price.value = "";
-                gender.value = "";
+                toggleForm();
                 console.log(perfumes);
               });
             } else {
@@ -351,14 +355,14 @@ export default {
       editMode,
       handleSubmit,
       editPerfumeInBD,
+      resetForm,
     };
   },
 };
 </script>
 
 <style>
-
-.main{
+.main {
   margin-top: 30px;
 }
 .buttons {
@@ -394,5 +398,23 @@ td.ingredients {
   cursor: pointer;
   border-radius: 5px;
   margin-bottom: 20px;
+}
+
+@media only screen and (max-width: 900px) {
+  .mainBrands {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .buttons {
+    order: 3;
+  }
+
+  .form {
+    margin-top: 20px;
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-bottom: 50px;
+  }
 }
 </style>

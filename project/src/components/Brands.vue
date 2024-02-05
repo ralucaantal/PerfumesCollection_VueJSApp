@@ -37,11 +37,13 @@
     </button>
     <template v-if="showPerfumes && brands.id === selectedBrandId">
       <div v-for="perfume in brands.perfumes" :key="perfume.id" class="brands">
-        <h3>{{ perfume.name }}</h3>
+        <h3>📌 Name: {{ perfume.name }}</h3>
         <p>Ingredients: {{ perfume.ingredients.join(", ") }}</p>
-        <p>Gender: {{ perfume.gender }}</p>
-        <p>Price: {{ perfume.price }} 💰</p>
-        <p>Rating: {{ perfume.rating }} ⭐</p>
+        <div class="details">
+          <p>Gender: {{ perfume.gender }}</p>
+          <p>Price: {{ perfume.price }} 💰</p>
+          <p>Rating: {{ perfume.rating }} ⭐</p>
+        </div>
 
         <div v-if="isLoggedIn">
           <p>
@@ -265,6 +267,10 @@ a {
   text-align: center;
 }
 
+.brand-informations > div {
+  margin-right: 20px;
+}
+
 .btn_toggle {
   background-color: #4f3b78;
   color: white;
@@ -272,6 +278,7 @@ a {
   border: none;
   cursor: pointer;
   border-radius: 5px;
+  margin-top: auto;
 }
 
 .delete-btn {
@@ -282,4 +289,6 @@ a {
   cursor: pointer;
   border-radius: 5px;
 }
+
+
 </style>

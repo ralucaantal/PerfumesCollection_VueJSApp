@@ -29,7 +29,7 @@
           Add Brand
         </button>
       </div>
-      <form v-show="showForm" @submit.prevent="handleSubmit">
+      <form class="form" v-show="showForm" @submit.prevent="handleSubmit">
         <h1>{{ editMode ? "Edit" : "Add" }} a Brand</h1>
         <input
           type="text"
@@ -299,5 +299,71 @@ export default {
 .mainBrands {
   display: flex;
   flex-direction: row;
+}
+
+@media only screen and (min-width: 700px) and (max-width: 900px) {
+  table {
+    font-size: 20px;
+    margin-left: 1px;
+    margin-right: 1px;
+  }
+
+  .mainBrands {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .buttons {
+    order: 3;
+  }
+
+  .form {
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-bottom: 50px;
+  }
+}
+
+@media only screen and (min-width: 300px) and (max-width: 700px) {
+  table {
+    font-size: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    word-wrap: break-word;
+  }
+
+  .mainBrands {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .buttons {
+    order: 3;
+  }
+
+  .form {
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 12px;
+    margin-bottom: 50px;
+    width: 250px;
+  }
+
+  .form h1 {
+    font-size: 16px;
+  }
+
+  .form p {
+    font-size: 12px;
+  }
+
+  .form input {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .form button {
+    margin: 8px 0;
+  }
 }
 </style>

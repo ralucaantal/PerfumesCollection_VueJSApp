@@ -16,8 +16,25 @@
       <button class="add-update" v-if="isLoggedIn" @click="addBrand">
         Add/Update Brand
       </button>
-      <div v-for="i in brands" :key="i" class="brands-container">
-        <Brands :brands="i" @updateBrands="handleUpdateBrands" />
+      <div v-for="(brandGroup, index) in paginatedBrands" :key="index" class="brands-container">
+        <Brands :brands="brandGroup" @updateBrands="handleUpdateBrands" />
+      </div>
+      <div class="pagination">
+        <button
+          class="page-nav"
+          @click="previousPage"
+          :disabled="currentPage === 1"
+        >
+          Previous
+        </button>
+        <span>{{ currentPage }}</span>
+        <button
+          class="page-nav"
+          @click="nextPage"
+          :disabled="currentPage * 3 >= brands.length"
+        >
+          Next
+        </button>
       </div>
     </div>
   </div>
@@ -42,12 +59,30 @@ export default {
         price: 1,
         rating: 1,
       },
+      currentPage: 1,
+      brandsPerPage: 3,
     };
   },
   computed: {
     ...mapGetters(["isLoggedIn"]),
+    paginatedBrands() {
+      const startIndex = (this.currentPage - 1) * this.brandsPerPage;
+      const endIndex = startIndex + this.brandsPerPage;
+      return this.brands.slice(startIndex, endIndex);
+    },
   },
   methods: {
+    nextPage() {
+      if (this.currentPage * this.brandsPerPage < this.brands.length) {
+        this.currentPage++;
+      }
+    },
+
+    previousPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
     averagePrice(perfumes) {
       const total = perfumes.reduce((sum, perfume) => sum + perfume.price, 0);
       const average = total / perfumes.length;
@@ -161,5 +196,22 @@ export default {
   border: none;
   cursor: pointer;
   border-radius: 5px;
+}
+
+.page-nav {
+  background-color: #927fbf;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-bottom: 20px;
+}
+
+.page-nav:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 </style>
