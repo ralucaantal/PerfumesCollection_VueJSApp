@@ -8,7 +8,7 @@ let requestOptions = {
   credentials: "same-origin",
   headers: {
     "Content-Type": "application/json",
-    "authorization": token,
+    authorization: token,
   },
   redirect: "follow",
   referrerPolicy: "no-referrer",

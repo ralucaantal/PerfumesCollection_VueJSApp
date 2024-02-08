@@ -20,17 +20,17 @@ export default createStore({
   },
   actions: {
     login({ commit }) {
-      console.log("Începe acțiunea de login"); // Adăugați această linie
+      console.log("Începe acțiunea de login"); 
       return new Promise((resolve) => {
         console.log(
           "Autentificare reușită. Setează starea isLoggedIn pe true."
         );
         commit("setLoggedIn", true);
 
-        // Verificare starea isLoggedIn după actualizare
+        
         console.log("Stare isLoggedIn:", this.state.isLoggedIn);
 
-        resolve(); // Resolve promisiunea pentru a semnala finalizarea acțiunii
+        resolve(); 
       });
     },
     logout({ commit }) {
@@ -39,7 +39,7 @@ export default createStore({
         console.log("Delogare. Setează starea isLoggedIn pe false.");
         commit("setLoggedIn", false);
 
-        // Verificare starea isLoggedIn după actualizare
+        
         console.log("Stare isLoggedIn:", this.state.isLoggedIn);
 
         resolve();

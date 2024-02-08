@@ -136,7 +136,7 @@ app.post("/login", async (req, res) => {
       if (result) {
         console.log("ai reușit");
         const token = jwt.sign({ name: username }, serverSecret, {
-          expiresIn: "1h",
+          expiresIn: "2h",
         });
         console.log("username: ", username);
         console.log("Tokenul tău este: ", token);

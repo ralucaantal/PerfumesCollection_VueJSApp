@@ -56,8 +56,8 @@ export default {
       brands: [],
       sortOrders: {
         name: -1,
-        price: 1,
-        rating: 1,
+        // price: 1,
+        // rating: 1,
       },
       currentPage: 1,
       brandsPerPage: 3,

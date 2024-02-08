@@ -246,14 +246,13 @@ export default {
     function toggleForm() {
       showForm.value = !showForm.value;
 
-      // Reset the form and edit mode when hiding the form
+
       if (!showForm.value) {
         resetForm();
       }
     }
 
     function resetForm() {
-      // Reset form fields
       name.value = "";
       foundingDate.value = "";
       country.value = "";
